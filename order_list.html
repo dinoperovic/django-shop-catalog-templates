@@ -5,7 +5,7 @@
     <h1>{% trans "Orders" %}</h1>
 
     <ul>
-        {% for order in object_list %}
+        {% for order in object_list reversed %}
         <li>
             <a href="{{ order.get_absolute_url }}">{{ order }}</a>
         </li>

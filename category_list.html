@@ -6,8 +6,17 @@
     <h1>{% trans "Categories" %}</h1>
     <hr>
 
-    {% for object in object_list %}
-    <h3><a href="{{ object.get_absolute_url }}">{{ object.get_name }}</a></h3>
+    <ul>
+        {% recursetree object_list %}
+            <li>
+                <a href="{{ node.get_absolute_url }}">{{ node.get_name }}</a>
+                {% if not node.is_leaf_node %}
+                    <ul>
+                        {{ children }}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endrecursetree %}
+    </ul>
 
-    {% endfor %}
 {% endblock %}

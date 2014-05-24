@@ -1,5 +1,5 @@
 {% extends "shop/base.html" %}
-{% load i18n %}
+{% load i18n utils_tags %}
 {% load url from future %}
 
 {% block body %}
@@ -9,12 +9,21 @@
     <p><strong>{% trans "Price" %}:</strong> {{ object.get_price }}</p>
 
     {% if object.is_group %}
-        <p><strong>{% trans "Variants" %}</strong></p>
-        <ul>
-            {% for object in object.variants.all %}
-                <li><a href="{{ object.get_absolute_url }}">{{ object.get_name }}</a></li>
-            {% endfor %}
-        </ul>
+        <div class="row">
+            <div class="col-sm-3 attributes">
+                {{ object.attrs }}
+                {% for attr in object.attrs %}
+                    <div id="attr-{{ attr.code }}" class="form-group">
+                        <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}</label>
+                        <select id="id_attr-{{ attr.code }}" class="form-control">
+                            {% for value in attr.values %}
+                                <option value="{{ value }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     {% endif %}
 
     {% if object.category %}

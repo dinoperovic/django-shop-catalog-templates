@@ -1,0 +1,10 @@
+{% extends "shop/base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block body %}
+    <h1>{% trans "Shipping fees" %}</h1>
+    <p>{% blocktrans %}You will be charged {{ shipping_costs }} for shipping.{% endblocktrans %}</p>
+    <br>
+    <a class="btn btn-success" href="{% url 'flat_process' %}">{% trans "Proceed" %}</a>
+{% endblock %}

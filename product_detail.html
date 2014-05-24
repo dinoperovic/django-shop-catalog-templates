@@ -1,0 +1,38 @@
+{% extends "shop/base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block body %}
+    <h1>{{ object.get_name }}</h1>
+
+    {{ object.get_slug }}
+    <p><strong>{% trans "Price" %}:</strong> {{ object.get_price }}</p>
+
+    {% if object.is_group %}
+        <p><strong>{% trans "Variants" %}</strong></p>
+        <ul>
+            {% for object in object.variants.all %}
+                <li><a href="{{ object.get_absolute_url }}">{{ object.get_name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if object.category %}
+        <p><a href="{{ object.category.get_absolute_url }}">{{ object.category.get_name }}</a></p>
+    {% else %}
+        <p>{% trans "(Product is at root category)" %}</p>
+    {% endif %}
+
+    <br>
+    <form method="post" action="{% url 'cart' %}">{% csrf_token %}
+        <input type="hidden" name="add_item_id" value="{{ object.pk }}">
+        <input type="hidden" name="add_item_quantity" value="1">
+        {% if object.can_be_added_to_cart %}
+            <input class="btn btn-primary btn-sm" type="submit" value="{% trans "Add to cart" %}">
+        {% else %}
+            <input class="btn btn-danger btn-sm" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+        {% endif %}
+    </form>
+
+{% endblock %}
+

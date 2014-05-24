@@ -1,0 +1,26 @@
+{% extends "shop/base.html" %}
+{% load i18n crispy_forms_tags %}
+
+{% block body %}
+    <h1>Shipping and Billing</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <h3>{% trans "Your shipping address" %}</h3>
+                {{ shipping_address|crispy }}
+            </div>
+            <div class="col-md-6">
+                <h3>{% trans "Your billing address" %}</h3>
+                {{ billing_address|crispy }}
+            </div>
+        </div>
+        <h3>{% trans "Payment and Shipping Methods" %}</h3>
+        {{ billing_shipping_form|crispy }}
+        <h3>{% trans "Extra info" %}</h3>
+        {{ extra_info_form|crispy }}
+
+        <br>
+        <button class="right btn btn-success" type="submit">{% trans "Save" %}</button>
+    </form>
+{% endblock %}

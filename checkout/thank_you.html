@@ -1,0 +1,10 @@
+{% extends "shop/base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block body %}
+    <h1>{% trans "Thank you for your order!" %}</h1>
+    <p>{% trans "Your order has been placed." %}</p>
+    <br>
+    <a class="btn btn-primary" href="{% url 'shop_welcome' %}">{% trans "Back to the main page" %}</a>
+{% endblock %}

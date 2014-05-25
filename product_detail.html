@@ -11,7 +11,6 @@
     {% if object.is_group %}
         <div class="row">
             <div class="col-sm-3 attributes">
-                {{ object.attrs }}
                 {% for attr in object.attrs %}
                     <div id="attr-{{ attr.code }}" class="form-group">
                         <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}</label>

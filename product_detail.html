@@ -1,5 +1,5 @@
 {% extends "shop/base.html" %}
-{% load i18n utils_tags %}
+{% load i18n sekizai_tags %}
 {% load url from future %}
 
 {% block body %}
@@ -8,22 +8,53 @@
     {{ object.get_slug }}
     <p><strong>{% trans "Price" %}:</strong> {{ object.get_price }}</p>
 
+    {# Display product attributes if product has variants. #}
     {% if object.is_group %}
         <div class="row">
-            <div class="col-sm-3 attributes">
+            <form action="{% url 'product_variants' object.get_slug %}" method="GET" class="col-sm-3 product-attributes">
                 {% for attr in object.attrs %}
                     <div id="attr-{{ attr.code }}" class="form-group">
                         <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}</label>
-                        <select id="id_attr-{{ attr.code }}" class="form-control">
+                        <select id="id_attr-{{ attr.code }}" name="{{ attr.code }}" class="attr form-control">
                             {% for value in attr.values %}
                                 <option value="{{ value }}">{{ value }}</option>
                             {% endfor %}
                         </select>
                     </div>
                 {% endfor %}
-            </div>
+            </form>
         </div>
     {% endif %}
+
+    {% addtoblock "js" %}
+        <script>
+            var jQuery = window.jQuery || django.jQuery;
+
+            (function ($) {
+                var $productAttributes = $('.product-attributes');
+
+                $(document).ready(function () {
+                    $productAttributes.find('.attr').on('change', function (event) {
+                        var getUrl = $productAttributes.attr('action');
+                        var getData = $productAttributes.serialize();
+                        var request = $.ajax({
+                            url: getUrl,
+                            type: 'GET',
+                            data: getData,
+                            dataType: 'json'
+                        });
+
+                        request.done(function(data) {
+                            console.log(data);
+                        });
+                    });
+
+
+                });
+
+            })(jQuery);
+        </script>
+    {% endaddtoblock %}
 
     {% if object.category %}
         <p><a href="{{ object.category.get_absolute_url }}">{{ object.category.get_name }}</a></p>

@@ -6,7 +6,7 @@
     <h1 class="model-name">{{ object.get_name }}</h1>
 
     <span class="model-slug">{{ object.get_slug }}</span>
-    <p><strong>{% trans "Unit price" %}:</strong> <span class="model-unit_price">{{ object.unit_price }}</span></p>
+    <p><strong>{% trans "Unit price" %}:</strong> <span class="model-unit_price">{{ object.get_unit_price }}</span></p>
     <p><strong>{% trans "Price" %}:</strong> <span class="model-price">{{ object.get_price }}</span></p>
 
     {# Display product attributes if product has variants. #}

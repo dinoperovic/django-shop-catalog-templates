@@ -3,16 +3,16 @@
 {% load url from future %}
 
 {% block body %}
-    <h1>{{ object.get_name }}</h1>
+    <h1 class="model-name">{{ object.get_name }}</h1>
 
-    {{ object.get_slug }}
-    <p><strong>{% trans "Price" %}:</strong> {{ object.get_price }}</p>
+    <span class="model-slug">{{ object.get_slug }}</span>
+    <p><strong>{% trans "Price" %}:</strong> <span class="model-price">{{ object.get_price }}</span></p>
 
     {# Display product attributes if product has variants. #}
     {% if object.is_group %}
         <div class="row">
-            <form action="{% url 'product_variants' object.get_slug %}" method="GET" class="col-sm-3 product-attributes">
-                {% for attr in object.attrs %}
+            <form action="{% url 'product_variants' object.get_slug %}" method="GET" class="col-sm-3 attrs-form">
+                {% for attr in object.get_variations %}
                     <div id="attr-{{ attr.code }}" class="form-group">
                         <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}</label>
                         <select id="id_attr-{{ attr.code }}" name="{{ attr.code }}" class="attr form-control">
@@ -26,36 +26,6 @@
         </div>
     {% endif %}
 
-    {% addtoblock "js" %}
-        <script>
-            var jQuery = window.jQuery || django.jQuery;
-
-            (function ($) {
-                var $productAttributes = $('.product-attributes');
-
-                $(document).ready(function () {
-                    $productAttributes.find('.attr').on('change', function (event) {
-                        var getUrl = $productAttributes.attr('action');
-                        var getData = $productAttributes.serialize();
-                        var request = $.ajax({
-                            url: getUrl,
-                            type: 'GET',
-                            data: getData,
-                            dataType: 'json'
-                        });
-
-                        request.done(function(data) {
-                            console.log(data);
-                        });
-                    });
-
-
-                });
-
-            })(jQuery);
-        </script>
-    {% endaddtoblock %}
-
     {% if object.category %}
         <p><a href="{{ object.category.get_absolute_url }}">{{ object.category.get_name }}</a></p>
     {% else %}
@@ -64,14 +34,105 @@
 
     <br>
     <form method="post" action="{% url 'cart' %}">{% csrf_token %}
-        <input type="hidden" name="add_item_id" value="{{ object.pk }}">
+        <input type="hidden" name="add_item_id" class="model-value-pk" value="{{ object.pk }}">
         <input type="hidden" name="add_item_quantity" value="1">
         {% if object.can_be_added_to_cart %}
-            <input class="btn btn-primary btn-sm" type="submit" value="{% trans "Add to cart" %}">
+            <input class="btn btn-primary btn-sm model-true-can_be_added_to_cart" type="submit" value="{% trans "Add to cart" %}">
+            <input class="btn btn-danger btn-sm model-false-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
         {% else %}
-            <input class="btn btn-danger btn-sm" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+            <input class="btn btn-primary btn-sm model-true-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Add to cart" %}">
+            <input class="btn btn-danger btn-sm model-false-can_be_added_to_cart" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
         {% endif %}
     </form>
+
+    {% addtoblock "js" %}
+        <script>
+            var jQuery = window.jQuery || django.jQuery;
+
+            (function ($) {
+
+                // Takes in boolean and enables or disables add to cart button.
+                var setCanBeAddedToCart = function (canBeAddedToCart) {
+                    if (canBeAddedToCart) {
+                        $('.model-true-can_be_added_to_cart').show();
+                        $('.model-false-can_be_added_to_cart').hide();
+                    } else {
+                        $('.model-true-can_be_added_to_cart').hide();
+                        $('.model-false-can_be_added_to_cart').show();
+                    }
+                };
+
+                // Takes in a JSON object and updates attributes.
+                var setVariant = function (data) {
+                    if (data) {
+                        setCanBeAddedToCart(data.can_be_added_to_cart);
+
+                        // Loop through data and map new values to models.
+                        for (var key in data) {
+                            var val = data[key];
+                            $('.model-' + key).html(val);
+                            $('.model-value-' + key).val(val);
+                        }
+                    } else {
+                        // Data is null.
+                        setCanBeAddedToCart(false);
+                    }
+                };
+
+                // Returns a variant with attributes given in $attrsForm.
+                var getVariant = function (url, data) {
+                    var result = null;
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        data: data,
+                        dataType: 'json',
+                        async: false,
+                        success: function (data) {
+                            result = data;
+                        }
+                    });
+                    return result;
+                };
+
+                $(document).ready(function () {
+                    var $attrsForm = $('.attrs-form');
+
+                    // Init variants only if they exist.
+                    if ($attrsForm.length) {
+                        var $attrsFormAction = $attrsForm.attr('action');
+
+                        // Base object data.
+                        var baseData = {
+                            pk: $('.model-pk').val(),
+                            parent: null,
+                            price: parseFloat($('.model-price').html()),
+                            name: $('.model-name').html(),
+                            slug: $('.model-slug').html(),
+                            can_be_added_to_cart: false
+                        };
+
+                        // Set initial variant.
+                        var variant = getVariant($attrsFormAction, $attrsForm.serialize());
+                        if (variant) {
+                            setVariant(variant);
+                        }
+
+                        // Add event listener when any attribute change.
+                        $attrsForm.find('.attr').on('change', function (event) {
+                            variant = getVariant($attrsFormAction, $attrsForm.serialize());
+                            if (variant) {
+                                setVariant(variant);
+                            } else {
+                                setVariant(baseData);
+                            }
+                        });
+                    }
+                });
+
+            })(jQuery);
+        </script>
+    {% endaddtoblock %}
 
 {% endblock %}
 

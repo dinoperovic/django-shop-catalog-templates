@@ -1,9 +1,8 @@
 {% extends "shop/base.html" %}
 {% load i18n %}
 
+{% block page_title %}<h1>{% trans "Orders" %}</h1>{% endblock %}
 {% block body %}
-    <h1>{% trans "Orders" %}</h1>
-
     <ul>
         {% for order in object_list reversed %}
         <li>
@@ -12,4 +11,3 @@
         {% endfor %}
     </ul>
 {% endblock %}
-

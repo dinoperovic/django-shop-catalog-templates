@@ -45,6 +45,8 @@
 {% block base_content %}
     <div class="container">
         <div class="break50"></div>
+        {% block page_title %}{% endblock %}
+        <hr>
         {% block body %}{% endblock %}
     </div>
 {% endblock %}

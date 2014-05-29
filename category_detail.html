@@ -1,1 +1,4 @@
-{% include "shop/product_list.html" %}
+{% extends "shop/product_list.html" %}
+{% load i18n %}
+
+{% block page_title %}<h1>{% trans "Category" %}: {{ object.get_name }}</h1>{% endblock %}

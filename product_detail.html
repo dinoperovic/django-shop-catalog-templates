@@ -2,9 +2,8 @@
 {% load i18n sekizai_tags %}
 {% load url from future %}
 
+{% block page_title %}<h1 class="model-name">{{ object.get_name }}</h1>{% endblock %}
 {% block body %}
-    <h1 class="model-name">{{ object.get_name }}</h1>
-
     <span class="model-slug">{{ object.get_slug }}</span>
     <p><strong>{% trans "Unit price" %}:</strong> <span class="model-unit_price">{{ object.get_unit_price }}</span></p>
     <p><strong>{% trans "Price" %}:</strong> <span class="model-price">{{ object.get_price }}</span></p>
@@ -29,6 +28,7 @@
             </form>
         </div>
 
+        {# Display all available combination of attributes. #}
         <p><strong>{% trans "Available combinations" %}:</strong></p>
         <ul>
         {% for item in object.variants.all %}
@@ -41,12 +41,18 @@
         </ul>
     {% endif %}
 
+    {# Categorization. #}
     {% if object.category %}
-        <p><a href="{{ object.category.get_absolute_url }}">{{ object.category.get_name }}</a></p>
-    {% else %}
-        <p>{% trans "(Product is at root category)" %}</p>
+        <p><strong>{% trans "Category" %}:</strong> <a href="{{ object.category.get_absolute_url }}">{{ object.category.get_name }}</a></p>
+    {% endif %}
+    {% if object.brand %}
+        <p><strong>{% trans "Brand" %}:</strong> <a href="{{ object.brand.get_absolute_url }}">{{ object.brand.get_name }}</a></p>
+    {% endif %}
+    {% if object.manufacturer %}
+        <p><strong>{% trans "Manufacturer" %}:</strong> <a href="{{ object.manufacturer.get_absolute_url }}">{{ object.manufacturer.get_name }}</a></p>
     {% endif %}
 
+    {# Add to cart form. #}
     <br>
     <form method="post" action="{% url 'cart' %}">{% csrf_token %}
         <input type="hidden" name="add_item_id" class="model-value-pk" value="{{ object.pk }}">

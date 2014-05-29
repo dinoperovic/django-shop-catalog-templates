@@ -17,6 +17,9 @@
                     <div id="attr-{{ attr.code }}" class="form-group">
                         <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}</label>
                         <select id="id_attr-{{ attr.code }}" name="{{ attr.code }}" class="attr form-control">
+                            {% if attr.is_nullable %}
+                                <option value>---------</option>
+                            {% endif %}
                             {% for value in attr.values %}
                                 <option value="{{ value }}">{{ value }}</option>
                             {% endfor %}
@@ -25,6 +28,17 @@
                 {% endfor %}
             </form>
         </div>
+
+        <p><strong>{% trans "Available combinations" %}:</strong></p>
+        <ul>
+        {% for item in object.variants.all %}
+            <li>
+                {% for attr in item.get_attrs %}
+                    <strong>{{ attr.name }}:</strong> {{ attr.value }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </li>
+        {% endfor %}
+        </ul>
     {% endif %}
 
     {% if object.category %}

@@ -4,10 +4,11 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
+    <li><a href="{% url 'checkout_selection' %}">{% trans "Checkout" %}</a></li>
     <li class="active">{% trans "Thank you" %}</li>
 {% endblock %}
 
-{% block page_title %}<h1>{% trans "Thank you for your order!" %}</h1>{% endblock %}
+{% block page_title %}<h1>{% trans "Thank you for your order!" %} <small>{% trans "Checkout" %}</small></h1>{% endblock %}
 
 {% block body %}
     <p>{% trans "Your order has been placed." %}</p>

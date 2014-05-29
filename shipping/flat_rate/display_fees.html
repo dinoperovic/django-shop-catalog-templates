@@ -8,7 +8,7 @@
     <li class="active">{% trans "Shipping" %}</li>
 {% endblock %}
 
-{% block page_title %}<h1>{% trans "Shipping fees" %}</h1>{% endblock %}
+{% block page_title %}<h1>{% trans "Shipping fees" %}  <small>{% trans "Checkout" %}</small></h1>{% endblock %}
 
 {% block body %}
     <p>{% blocktrans %}You will be charged {{ shipping_costs }} for shipping.{% endblocktrans %}</p>

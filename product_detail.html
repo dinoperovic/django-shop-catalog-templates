@@ -8,7 +8,7 @@
     <li class="active model-name">{{ object.get_name }}</li>
 {% endblock %}
 
-{% block page_title %}<h1>{% trans "Product" %}: <span class="model-name">{{ object.get_name }}</span></h1>{% endblock %}
+{% block page_title %}<h1><span class="model-name">{{ object.get_name }}</span> <small>{% trans "Product" %} </small></h1>{% endblock %}
 
 {% block body %}
     <p><span class="model-slug">{{ object.get_slug }}</span></p>
@@ -27,6 +27,7 @@
 
                         {# Radio atribute template. #}
                         {% if attr.template == 'radio' %}
+                            <p>{{ attr.name }}:</p>
                             {% if attr.is_nullable %}
                                 <div class="radio">
                                     <label>

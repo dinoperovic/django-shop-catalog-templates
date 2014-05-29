@@ -48,15 +48,18 @@
 
 {% block base_content %}
     <div class="container">
-        <ol class="breadcrumb">
-            {% block breadcrumbs %}
-                <li><a href="{% url 'shop_welcome' %}">{% trans "Home" %}</a></li>
-            {% endblock %}
-        </ol>
-        <div class="break50"></div>
-        {% block page_title %}{% endblock %}
-        <hr>
-        {% block body %}{% endblock %}
+        {% block content %}
+            <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                    <li><a href="{% url 'shop_welcome' %}">{% trans "Home" %}</a></li>
+                {% endblock %}
+            </ol>
+            <div class="break50"></div>
+            <div class="page-header">
+                {% block page_title %}{% endblock %}
+            </div>
+            {% block body %}{% endblock %}
+        {% endblock %}
     </div>
 {% endblock %}
 

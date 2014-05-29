@@ -2,11 +2,14 @@
 {% load i18n sekizai_tags %}
 {% load url from future %}
 
-{% block page_title %}<h1 class="model-name">{{ object.get_name }}</h1>{% endblock %}
+{% block page_title %}<h1>{% trans "Product" %}: <span class="model-name">{{ object.get_name }}</span></h1>{% endblock %}
 {% block body %}
-    <span class="model-slug">{{ object.get_slug }}</span>
-    <p><strong>{% trans "Unit price" %}:</strong> <span class="model-unit_price">{{ object.get_unit_price }}</span></p>
-    <p><strong>{% trans "Price" %}:</strong> <span class="model-price">{{ object.get_price }}</span></p>
+    <p><span class="model-slug">{{ object.get_slug }}</span></p>
+    <p>
+        <strong>{% trans "Unit price" %}:</strong> <span class="model-unit_price">{{ object.get_unit_price }}</span><br>
+        <strong>{% trans "Discount percent" %}:</strong> <span class="model-discount_percent">{{ object.get_discount_percent }}</span>%<br>
+        <strong>{% trans "Price" %}:</strong> <span class="model-price">{{ object.get_price }}</span><br>
+    </p>
 
     {# Display product attributes if product has variants. #}
     {% if object.is_group %}
@@ -14,43 +17,71 @@
             <form action="{% url 'product_variants' object.get_slug %}" method="GET" class="col-sm-3 attrs-form">
                 {% for attr in object.get_variations %}
                     <div id="attr-{{ attr.code }}" class="form-group">
-                        <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}</label>
-                        <select id="id_attr-{{ attr.code }}" name="{{ attr.code }}" class="attr form-control">
+
+                        {# Radio atribute template. #}
+                        {% if attr.template == 'radio' %}
                             {% if attr.is_nullable %}
-                                <option value>---------</option>
+                                <div class="radio">
+                                    <label>
+                                        <input name="{{ attr.code }}" class="attr" type="radio" value checked>
+                                        {% trans "None" %}
+                                    </label>
+                                </div>
                             {% endif %}
                             {% for value in attr.values %}
-                                <option value="{{ value }}">{{ value }}</option>
+                                <div class="radio">
+                                    <label for="id_attr-{{ attr.code }}-{{ forloop.counter }}">
+                                        <input id="id_attr-{{ attr.code }}-{{ forloop.counter }}" class="attr" name="{{ attr.code }}" type="radio" value="{{ value }}"
+                                            {% if not attr.is_nullable and forloop.first %} checked{% endif %}>
+                                        {{ value }}
+                                    </label>
+                                </div>
                             {% endfor %}
-                        </select>
+
+                        {# Default attribute template. #}
+                        {% else %}
+                            <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}:</label>
+                            <select id="id_attr-{{ attr.code }}" name="{{ attr.code }}" class="attr form-control">
+                                {% if attr.is_nullable %}
+                                    <option value>---------</option>
+                                {% endif %}
+                                {% for value in attr.values %}
+                                    <option value="{{ value }}">{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </form>
         </div>
 
         {# Display all available combination of attributes. #}
-        <p><strong>{% trans "Available combinations" %}:</strong></p>
-        <ul>
-        {% for item in object.variants.all %}
-            <li>
-                {% for attr in item.get_attrs %}
-                    <strong>{{ attr.name }}:</strong> {{ attr.value }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </li>
-        {% endfor %}
-        </ul>
+        <p>
+            <strong>{% trans "Available combinations" %}:</strong>
+            <ul>
+            {% for item in object.variants.all %}
+                <li>
+                    {% for attr in item.get_attrs %}
+                        <strong>{{ attr.name }}:</strong> {{ attr.value }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </li>
+            {% endfor %}
+            </ul>
+        </p>
     {% endif %}
 
     {# Categorization. #}
-    {% if object.category %}
-        <p><strong>{% trans "Category" %}:</strong> <a href="{{ object.category.get_absolute_url }}">{{ object.category.get_name }}</a></p>
-    {% endif %}
-    {% if object.brand %}
-        <p><strong>{% trans "Brand" %}:</strong> <a href="{{ object.brand.get_absolute_url }}">{{ object.brand.get_name }}</a></p>
-    {% endif %}
-    {% if object.manufacturer %}
-        <p><strong>{% trans "Manufacturer" %}:</strong> <a href="{{ object.manufacturer.get_absolute_url }}">{{ object.manufacturer.get_name }}</a></p>
-    {% endif %}
+    <p>
+        {% if object.category %}
+            <strong>{% trans "Category" %}:</strong> <a href="{{ object.category.get_absolute_url }}">{{ object.category.get_name }}</a><br>
+        {% endif %}
+        {% if object.brand %}
+            <strong>{% trans "Brand" %}:</strong> <a href="{{ object.brand.get_absolute_url }}">{{ object.brand.get_name }}</a><br>
+        {% endif %}
+        {% if object.manufacturer %}
+            <strong>{% trans "Manufacturer" %}:</strong> <a href="{{ object.manufacturer.get_absolute_url }}">{{ object.manufacturer.get_name }}</a><br>
+        {% endif %}
+    </p>
 
     {# Add to cart form. #}
     <br>
@@ -123,6 +154,7 @@
                     if ($attrsForm.length) {
                         var $attrsFormAction = $attrsForm.attr('action');
 
+
                         // Base object data.
                         var baseData = {
                             pk: $('.model-pk').val(),
@@ -130,6 +162,7 @@
                             name: $('.model-name').html(),
                             slug: $('.model-slug').html(),
                             unit_price: $('.model-unit_price').html(),
+                            discount_percent: $('.model-discount_percent').html(),
                             price: $('.model-price').html(),
                             can_be_added_to_cart: false
                         };

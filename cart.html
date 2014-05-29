@@ -8,7 +8,7 @@
         <form method="post" action="{% url 'cart_update' %}">
             {% csrf_token %}
             {{ formset.management_form }}
-            <table class="table">
+            <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>{% trans "Product name" %}</th>

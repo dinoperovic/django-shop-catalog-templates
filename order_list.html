@@ -1,7 +1,13 @@
 {% extends "shop/base.html" %}
 {% load i18n %}
 
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="active">{% trans "Orders" %}</li>
+{% endblock %}
+
 {% block page_title %}<h1>{% trans "Orders" %}</h1>{% endblock %}
+
 {% block body %}
     <ul>
         {% for order in object_list reversed %}

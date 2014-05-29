@@ -2,7 +2,12 @@
 {% load i18n %}
 {% load url from future %}
 
+{% block breadcrumbs %}
+    <li class="active">{% trans "Home" %}</li>
+{% endblock %}
+
 {% block page_title %}<h1>{% trans "Welcome to django SHOP" %}</h1>{% endblock %}
+
 {% block body %}
     <p>{% trans "This is a demo shop." %}</p>
 {% endblock %}

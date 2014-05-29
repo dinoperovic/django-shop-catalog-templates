@@ -1,4 +1,4 @@
 {% load i18n %}
 {% load url from future %}
 
-<a href="{% url 'cart' %}">{% trans "Cart" %} ({{ cart.total_quantity }})</a>
+<a href="{% url 'cart' %}"><span class="glyphicon glyphicon-shopping-cart"></span> {% trans "Cart" %} ({{ cart.total_quantity }})</a>

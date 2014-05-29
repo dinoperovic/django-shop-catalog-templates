@@ -1,4 +1,24 @@
-{% extends "shop/category_list.html" %}
-{% load i18n %}
+{% extends "shop/base.html" %}
+{% load i18n mptt_tags %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="active">{% trans "Manufaturers" %}</li>
+{% endblock %}
 
 {% block page_title %}<h1>{% trans "Manufacturers" %}</h1>{% endblock %}
+
+{% block body %}
+    <ul>
+        {% recursetree object_list %}
+            <li>
+                <a href="{{ node.get_absolute_url }}">{{ node.get_name }}</a>
+                {% if not node.is_leaf_node %}
+                    <ul>
+                        {{ children }}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endrecursetree %}
+    </ul>
+{% endblock %}

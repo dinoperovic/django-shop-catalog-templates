@@ -2,7 +2,14 @@
 {% load i18n %}
 {% load shop_tags %}
 
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li><a href="{% url 'order_list' %}">{% trans "Orders" %}</a></li>
+    <li class="active">{{ object }}</li>
+{% endblock %}
+
 {% block page_title %}<h1>{{ object }}</h1>{% endblock %}
+
 {% block body %}
     {% order object %}
 {% endblock %}

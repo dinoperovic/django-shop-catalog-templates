@@ -1,8 +1,13 @@
 {% extends "shop/base.html" %}
 {% load i18n mptt_tags %}
-{% load url from future %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="active">{% trans "Categories" %}</li>
+{% endblock %}
 
 {% block page_title %}<h1>{% trans "Categories" %}</h1>{% endblock %}
+
 {% block body %}
     <ul>
         {% recursetree object_list %}
@@ -16,5 +21,4 @@
             </li>
         {% endrecursetree %}
     </ul>
-
 {% endblock %}

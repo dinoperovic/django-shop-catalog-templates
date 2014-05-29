@@ -2,7 +2,14 @@
 {% load i18n sekizai_tags %}
 {% load url from future %}
 
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li><a href="{% url 'product_list' %}">{% trans "Products" %}</a></li>
+    <li class="active model-name">{{ object.get_name }}</li>
+{% endblock %}
+
 {% block page_title %}<h1>{% trans "Product" %}: <span class="model-name">{{ object.get_name }}</span></h1>{% endblock %}
+
 {% block body %}
     <p><span class="model-slug">{{ object.get_slug }}</span></p>
     <p>

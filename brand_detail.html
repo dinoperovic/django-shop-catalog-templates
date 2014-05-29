@@ -1,4 +1,17 @@
-{% extends "shop/product_list.html" %}
-{% load i18n %}
+{% extends "shop/base.html" %}
+{% load shop_tags i18n %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li><a href="{% url 'brand_list' %}">{% trans "Brands" %}</a></li>
+    {% for bread in object.get_ancestors %}
+        <li><a href="{{ bread.get_absolute_url }}">{{ bread.get_name }}</a></li>
+    {% endfor %}
+    <li class="active">{{ object.get_name }}</li>
+{% endblock %}
 
 {% block page_title %}<h1>{% trans "Brand" %}: {{ object.get_name }}</h1>{% endblock %}
+
+{% block body %}
+    {% products object_list %}
+{% endblock %}

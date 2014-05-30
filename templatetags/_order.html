@@ -3,18 +3,18 @@
 <h3>{% trans "Order ID:" %} {{ order.pk }}</h3>
 <p>{% trans "Order Status" %}: {{ order.get_status_display }}</p>
 
-<table class="table order-address">
-    <tr>
-        <td class="form-group">
-            <label class="control-label">{% trans "Shipping Address" %}</label>
-            {% if order.shipping_address_text %}<textarea class="form-control" rows="8">{{ order.shipping_address_text }}</textarea>{% endif %}
-        </td>
-        <td class="form-group">
-            <label class="control-label">{% trans "Billing Address" %}</label>
-            {% if order.billing_address_text %}<textarea class="form-control" rows="8">{{ order.billing_address_text }}</textarea>{% endif %}
-        </td>
-    </tr>
-</table>
+<div class="row order-address">
+    <div class="col-md-6">
+        <label class="control-label">{% trans "Shipping Address" %}</label>
+        {% if order.shipping_address_text %}<textarea class="form-control" rows="8">{{ order.shipping_address_text }}</textarea>{% endif %}
+        <br>
+    </div>
+    <div class="col-md-6">
+        <label class="control-label">{% trans "Billing Address" %}</label>
+        {% if order.billing_address_text %}<textarea class="form-control" rows="8">{{ order.billing_address_text }}</textarea>{% endif %}
+        <br>
+    </div>
+</div>
 
 <table class="table table-hover order">
     <thead>

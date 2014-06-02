@@ -1,0 +1,17 @@
+{% extends "shop/base.html" %}
+{% load shop_tags i18n %}
+{% load url from future %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li><a href="{% url 'checkout_selection' %}">{% trans "Checkout" %}</a></li>
+    <li class="active">{% trans "Payment" %}</li>
+{% endblock %}
+
+{% block page_title %}<h1>{% trans "Payment" %}  <small>{% trans "Checkout" %}</small></h1>{% endblock %}
+
+{% block body %}
+    {% order order %}
+    <p>{% blocktrans %}Please pay {{ amount }} for your order to be completed.{% endblocktrans %}</p>
+    <a class="btn btn-success" href="{{ next_url }}">{% trans "Proceed" %}</a>
+{% endblock %}

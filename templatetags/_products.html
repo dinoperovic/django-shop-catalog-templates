@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n thumbnail %}
 
 <div class="row">
     {% if products %}
@@ -6,10 +6,19 @@
             <div class="col-md-4 col-sm-6">
                 <h3><a href="{{ object.get_absolute_url }}">{{ object.get_name }}</a></h3>
 
-                {{ object.get_slug }}
-                <p><strong>{% trans "Price" %}:</strong> {{ object.get_price }}</p>
-
+                {% with object.get_primary_image as primary_image %}
+                    <a href="{{ object.get_absolute_url }}" class="img">
+                        {% if primary_image %}
+                            <img class="img-rounded img-responsive" src="{% thumbnail primary_image.image "800x400" crop upscale %}" alt="{{ primary_image.caption }}">
+                        {% else %}
+                            <img class="img-rounded img-responsive" src="http://placehold.it/800x400" alt="">
+                        {% endif %}
+                    </a>
+                {% endwith %}
+                <div class="clearfix"></div>
                 <br>
+
+                <p><strong>{% trans "Price" %}:</strong> {{ object.get_price }}</p>
                 <form method="post" action="{% url 'cart' %}">{% csrf_token %}
                     <input type="hidden" name="add_item_id" value="{{ object.pk }}">
                     <input type="hidden" name="add_item_quantity" value="1">

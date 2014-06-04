@@ -1,5 +1,5 @@
 {% extends "shop/base.html" %}
-{% load i18n sekizai_tags %}
+{% load i18n sekizai_tags thumbnail %}
 {% load url from future %}
 
 {% block breadcrumbs %}
@@ -8,102 +8,122 @@
     <li class="active model-name">{{ object.get_name }}</li>
 {% endblock %}
 
-{% block page_title %}<h1><span class="model-name">{{ object.get_name }}</span> <small>{% trans "Product" %} </small></h1>{% endblock %}
+{% block page_title %}<h1>{{ object.get_name }} <small>{% trans "Product" %} </small></h1>{% endblock %}
 
 {% block body %}
-    <p><span class="model-slug">{{ object.get_slug }}</span></p>
-    <p>
-        <strong>{% trans "Unit price" %}:</strong> <span class="model-unit_price">{{ object.get_unit_price }}</span><br>
-        <strong>{% trans "Discount percent" %}:</strong> <span class="model-discount_percent">{{ object.get_discount_percent }}</span>%<br>
-        <strong>{% trans "Price" %}:</strong> <span class="model-price">{{ object.get_price }}</span><br>
-    </p>
+    <div class="row">
+        <div class="col-md-6">
+            {% with object.get_primary_image as primary_image %}
+                <a href="{{ object.get_absolute_url }}" class="img">
+                    {% if primary_image %}
+                        <img class="img-rounded img-responsive" src="{% thumbnail primary_image.image "800x400" crop upscale %}" alt="{{ primary_image.caption }}">
+                    {% else %}
+                        <img class="img-rounded img-responsive" src="http://placehold.it/800x400" alt="">
+                    {% endif %}
+                </a>
+            {% endwith %}
+            <div class="clearfix"></div>
+            <br>
+        </div>
 
-    {# Display product attributes if product has variants. #}
-    {% if object.is_group %}
-        <div class="row">
-            <form action="{% url 'product_variants' object.get_slug %}" method="GET" class="col-sm-3 attrs-form">
-                {% for attr in object.get_variations %}
-                    <div id="attr-{{ attr.code }}" class="form-group">
+        <div class="col-md-6">
+            <h3><span class="model-name">{{ object.get_name }}</span> <br><small class="model-slug">{{ object.get_slug }}</small></h3>
 
-                        {# Radio atribute template. #}
-                        {% if attr.template == 'radio' %}
-                            <p>{{ attr.name }}:</p>
-                            {% if attr.is_nullable %}
-                                <div class="radio">
-                                    <label>
-                                        <input name="{{ attr.code }}" class="attr" type="radio" value checked>
-                                        {% trans "None" %}
-                                    </label>
-                                </div>
-                            {% endif %}
-                            {% for value in attr.values %}
-                                <div class="radio">
-                                    <label for="id_attr-{{ attr.code }}-{{ forloop.counter }}">
-                                        <input id="id_attr-{{ attr.code }}-{{ forloop.counter }}" class="attr" name="{{ attr.code }}" type="radio" value="{{ value }}"
-                                            {% if not attr.is_nullable and forloop.first %} checked{% endif %}>
-                                        {{ value }}
-                                    </label>
-                                </div>
-                            {% endfor %}
+            <p>
+                <strong>{% trans "Unit price" %}:</strong> <span class="model-unit_price">{{ object.get_unit_price }}</span><br>
+                <strong>{% trans "Discount percent" %}:</strong> <span class="model-discount_percent">{{ object.get_discount_percent }}</span>%<br>
+                <strong>{% trans "Price" %}:</strong> <span class="model-price">{{ object.get_price }}</span><br>
+            </p>
 
-                        {# Default attribute template. #}
-                        {% else %}
-                            <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}:</label>
-                            <select id="id_attr-{{ attr.code }}" name="{{ attr.code }}" class="attr form-control">
-                                {% if attr.is_nullable %}
-                                    <option value>---------</option>
+            {# Display product attributes if product has variants. #}
+            {% if object.is_group %}
+                <div class="row">
+                    <form action="{% url 'product_variants' object.get_slug %}" method="GET" class="col-sm-6 attrs-form">
+                        {% for attr in object.get_variations %}
+                            <div id="attr-{{ attr.code }}" class="form-group">
+
+                                {# Radio atribute template. #}
+                                {% if attr.template == 'radio' %}
+                                    <p>{{ attr.name }}:</p>
+                                    {% if attr.is_nullable %}
+                                        <div class="radio">
+                                            <label>
+                                                <input name="{{ attr.code }}" class="attr" type="radio" value checked>
+                                                {% trans "None" %}
+                                            </label>
+                                        </div>
+                                    {% endif %}
+                                    {% for value in attr.values %}
+                                        <div class="radio">
+                                            <label for="id_attr-{{ attr.code }}-{{ forloop.counter }}">
+                                                <input id="id_attr-{{ attr.code }}-{{ forloop.counter }}" class="attr" name="{{ attr.code }}" type="radio" value="{{ value }}"
+                                                    {% if not attr.is_nullable and forloop.first %} checked{% endif %}>
+                                                {{ value }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+
+                                {# Default attribute template. #}
+                                {% else %}
+                                    <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}:</label>
+                                    <select id="id_attr-{{ attr.code }}" name="{{ attr.code }}" class="attr form-control">
+                                        {% if attr.is_nullable %}
+                                            <option value>---------</option>
+                                        {% endif %}
+                                        {% for value in attr.values %}
+                                            <option value="{{ value }}">{{ value }}</option>
+                                        {% endfor %}
+                                    </select>
                                 {% endif %}
-                                {% for value in attr.values %}
-                                    <option value="{{ value }}">{{ value }}</option>
-                                {% endfor %}
-                            </select>
-                        {% endif %}
-                    </div>
-                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </form>
+                </div>
+
+                {# Display all available combination of attributes. #}
+                <p>
+                    <strong>{% trans "Available combinations" %}:</strong>
+                    <ul>
+                    {% for item in object.variants.all %}
+                        <li>
+                            {% for attr in item.get_attrs %}
+                                <strong>{{ attr.name }}:</strong> {{ attr.value }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </p>
+            {% endif %}
+
+            {# Categorization. #}
+            <p>
+                {% if object.category %}
+                    <strong>{% trans "Category" %}:</strong> <a href="{{ object.category.get_absolute_url }}">{{ object.category.get_name }}</a><br>
+                {% endif %}
+                {% if object.brand %}
+                    <strong>{% trans "Brand" %}:</strong> <a href="{{ object.brand.get_absolute_url }}">{{ object.brand.get_name }}</a><br>
+                {% endif %}
+                {% if object.manufacturer %}
+                    <strong>{% trans "Manufacturer" %}:</strong> <a href="{{ object.manufacturer.get_absolute_url }}">{{ object.manufacturer.get_name }}</a><br>
+                {% endif %}
+            </p>
+
+            {# Add to cart form. #}
+            <br>
+            <form method="post" action="{% url 'cart' %}">{% csrf_token %}
+                <input type="hidden" name="add_item_id" class="model-value-pk" value="{{ object.pk }}">
+                <input type="hidden" name="add_item_quantity" value="1">
+                {% if object.can_be_added_to_cart %}
+                    <input class="btn btn-primary btn-sm model-true-can_be_added_to_cart" type="submit" value="{% trans "Add to cart" %}">
+                    <input class="btn btn-danger btn-sm model-false-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+                {% else %}
+                    <input class="btn btn-primary btn-sm model-true-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Add to cart" %}">
+                    <input class="btn btn-danger btn-sm model-false-can_be_added_to_cart" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+                {% endif %}
             </form>
         </div>
 
-        {# Display all available combination of attributes. #}
-        <p>
-            <strong>{% trans "Available combinations" %}:</strong>
-            <ul>
-            {% for item in object.variants.all %}
-                <li>
-                    {% for attr in item.get_attrs %}
-                        <strong>{{ attr.name }}:</strong> {{ attr.value }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </li>
-            {% endfor %}
-            </ul>
-        </p>
-    {% endif %}
-
-    {# Categorization. #}
-    <p>
-        {% if object.category %}
-            <strong>{% trans "Category" %}:</strong> <a href="{{ object.category.get_absolute_url }}">{{ object.category.get_name }}</a><br>
-        {% endif %}
-        {% if object.brand %}
-            <strong>{% trans "Brand" %}:</strong> <a href="{{ object.brand.get_absolute_url }}">{{ object.brand.get_name }}</a><br>
-        {% endif %}
-        {% if object.manufacturer %}
-            <strong>{% trans "Manufacturer" %}:</strong> <a href="{{ object.manufacturer.get_absolute_url }}">{{ object.manufacturer.get_name }}</a><br>
-        {% endif %}
-    </p>
-
-    {# Add to cart form. #}
-    <br>
-    <form method="post" action="{% url 'cart' %}">{% csrf_token %}
-        <input type="hidden" name="add_item_id" class="model-value-pk" value="{{ object.pk }}">
-        <input type="hidden" name="add_item_quantity" value="1">
-        {% if object.can_be_added_to_cart %}
-            <input class="btn btn-primary btn-sm model-true-can_be_added_to_cart" type="submit" value="{% trans "Add to cart" %}">
-            <input class="btn btn-danger btn-sm model-false-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
-        {% else %}
-            <input class="btn btn-primary btn-sm model-true-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Add to cart" %}">
-            <input class="btn btn-danger btn-sm model-false-can_be_added_to_cart" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
-        {% endif %}
-    </form>
+    </div>
 
     {% addtoblock "js" %}
         <script>

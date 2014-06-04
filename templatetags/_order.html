@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n catalog_tags %}
 
 <h3>{% trans "Order ID:" %} {{ order.pk }}</h3>
 <p>{% trans "Order Status" %}: {{ order.get_status_display }}</p>
@@ -29,10 +29,10 @@
     <tbody>
         {% for item in order.items.all %}
             <tr>
-                <td>{{item.product_name}}</td>
-                <td>{{ item.unit_price }}</td>
-                <td>{{item.quantity}}</td>
-                <td>{{item.line_subtotal }}</td>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.unit_price|round_2 }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.line_subtotal|round_2 }}</td>
             </tr>
             {% for item_extra in item.extraorderitempricefield_set.all %}
                 <tr>
@@ -41,22 +41,22 @@
                     <td>{{ item_extra.value }}</td>
                 </tr>
                 {% if forloop.last %}
-                    <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{ item.line_total }}</td></tr>
+                    <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{ item.line_total|round_2 }}</td></tr>
                 {% endif %}
             {% endfor %}
         {% endfor %}
     </tbody>
 
     <tfoot>
-        <tr><td colspan="2">&nbsp;</td><td>{% trans "Order Subtotal" %}</td><td>{{ order.order_subtotal }}</td></tr>
+        <tr><td colspan="2">&nbsp;</td><td>{% trans "Order Subtotal" %}</td><td>{{ order.order_subtotal|round_2 }}</td></tr>
         {% for extra_price_field in order.extraorderpricefield_set.all %}
             <tr>
                 <td colspan="2">&nbsp;</td>
                 <td>{{ extra_price_field.label }}</td>
-                <td>{{ extra_price_field.value }}</td>
+                <td>{{ extra_price_field.value|round_2 }}</td>
             </tr>
         {% endfor %}
-        <tr><td colspan="2">&nbsp;</td><td><b>{% trans "Order Total" %}</b></td><td><b>{{ order.order_total }}</b></td></tr>
+        <tr><td colspan="2">&nbsp;</td><td><b>{% trans "Order Total" %}</b></td><td><b>{{ order.order_total|round_2 }}</b></td></tr>
     </tfoot>
 </table>
 

@@ -1,5 +1,5 @@
 {% extends "shop/base.html" %}
-{% load i18n crispy_forms_field %}
+{% load i18n catalog_tags crispy_forms_field %}
 {% load url from future %}
 
 {% block breadcrumbs %}
@@ -35,17 +35,17 @@
                                     {{ field.errors }}
                                     {% crispy_field field %}
                                 </td>
-                                <td>{{ form.instance.line_subtotal }}</td>
+                                <td>{{ form.instance.line_subtotal|round_2 }}</td>
                             </tr>
 
                             {% for extra_price_field in form.instance.extra_price_fields %}
                                 <tr>
                                     <td colspan="2">&nbsp;</td>
                                     <td>{{ extra_price_field.0 }}</td>
-                                    <td>{{ extra_price_field.1 }}</td>
+                                    <td>{{ extra_price_field.1|round_2 }}</td>
                                 </tr>
                                 {% if forloop.last %}
-                                    <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{ form.instance.line_total }}</td></tr>
+                                    <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{ form.instance.line_total|round_2 }}</td></tr>
                                 {% endif %}
                             {% endfor %}
 
@@ -54,15 +54,15 @@
                 </tbody>
 
                 <tfoot>
-                    <tr><td colspan="2">&nbsp;</td><td>{% trans "Cart Subtotal" %}</td><td>{{ cart.subtotal_price }}</td></tr>
+                    <tr><td colspan="2">&nbsp;</td><td>{% trans "Cart Subtotal" %}</td><td>{{ cart.subtotal_price|round_2 }}</td></tr>
                     {% for extra_price_field in cart.extra_price_fields %}
                     <tr>
                         <td colspan="2">&nbsp;</td>
                         <td>{{ extra_price_field.0 }}</td>
-                        <td>{{ extra_price_field.1 }}</td>
+                        <td>{{ extra_price_field.1|round_2 }}</td>
                     </tr>
                     {% endfor %}
-                    <tr><td colspan="2">&nbsp;</td><td><b>{% trans "Cart Total" %}</b></td><td><b>{{ cart.total_price }}</b></td></tr>
+                    <tr><td colspan="2">&nbsp;</td><td><b>{% trans "Cart Total" %}</b></td><td><b>{{ cart.total_price|round_2 }}</b></td></tr>
                 </tfoot>
             </table>
 

@@ -12,6 +12,8 @@
 
 {% block body %}
     <div class="row">
+
+        {# Image gallery #}
         <div class="col-md-6">
             {% with object.get_primary_image as primary_image %}
                 <a href="{{ object.get_absolute_url }}" class="img">

@@ -209,19 +209,7 @@
                     // Init variants only if they exist.
                     if ($attrsForm.length) {
                         var $attrsFormAction = $attrsForm.attr('action');
-
-                        // Base object data.
-                        var baseData = {
-                            pk: $('.model_value-pk').val(),
-                            parent: null,
-                            name: $('.model-name').html(),
-                            slug: $('.model-slug').html(),
-                            unit_price: $('.model-unit_price').html(),
-                            discount_percent: $('.model-discount_percent').html(),
-                            price: $('.model-price').html(),
-                            url: $('.model-url').html(),
-                            can_be_added_to_cart: false
-                        };
+                        var baseData = $.parseJSON($('<div/>').html('{{ object.as_json }}').text());
 
                         // Set initial variant.
                         var variant = getVariant($attrsFormAction, $attrsForm.serialize());

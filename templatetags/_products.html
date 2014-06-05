@@ -6,15 +6,13 @@
             <div class="col-md-4 col-sm-6">
                 <h3><a href="{{ object.get_absolute_url }}">{{ object.get_name }}</a></h3>
 
-                 {% with object.get_featured_image as featured_image %}
-                    <a href="{{ object.get_absolute_url }}" class="img">
-                        {% if featured_image %}
-                            <img class="img-rounded img-responsive" src="{% thumbnail featured_image "800x400" crop upscale %}" alt="{{ object.get_name }}">
-                        {% else %}
-                            <img class="img-rounded img-responsive" src="http://placehold.it/800x400" alt="">
-                        {% endif %}
-                    </a>
-                {% endwith %}
+                <a href="{{ object.get_absolute_url }}" class="img">
+                    {% if object.featured_image %}
+                        <img class="img-rounded img-responsive" src="{% thumbnail object.featured_image "800x400" crop upscale %}" alt="{{ object.get_name }}">
+                    {% else %}
+                        <img class="img-rounded img-responsive" src="http://placehold.it/800x400" alt="">
+                    {% endif %}
+                </a>
                 <div class="clearfix"></div>
                 <br>
 

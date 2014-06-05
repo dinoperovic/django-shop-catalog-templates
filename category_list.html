@@ -9,16 +9,20 @@
 {% block page_title %}<h1>{% trans "Categories" %}</h1>{% endblock %}
 
 {% block body %}
-    <ul>
-        {% recursetree object_list %}
-            <li>
-                <a href="{{ node.get_absolute_url }}">{{ node.get_name }}</a>
-                {% if not node.is_leaf_node %}
-                    <ul>
-                        {{ children }}
-                    </ul>
-                {% endif %}
-            </li>
-        {% endrecursetree %}
-    </ul>
+    {% if object_list %}
+        <ul>
+            {% recursetree object_list %}
+                <li>
+                    <a href="{{ node.get_absolute_url }}">{{ node.get_name }}</a>
+                    {% if not node.is_leaf_node %}
+                        <ul>
+                            {{ children }}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endrecursetree %}
+        </ul>
+    {% else %}
+        <p>{% trans "No categories." %}</p>
+    {% endif %}
 {% endblock %}

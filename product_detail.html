@@ -13,7 +13,7 @@
 {% block body %}
     <div class="row">
 
-        {# Image gallery #}
+        {# Media placeholder. #}
         <div class="product-media col-md-6">
             <div id="placeholder-media-{{ object.pk }}" class="placeholder-media">
                 {% render_placeholder object.media %}
@@ -98,22 +98,25 @@
             {% endif %}
 
             {# Categorization. #}
-            <p>
-                {% if object.category %}
-                    <strong>{% trans "Category" %}:</strong> <a href="{{ object.category.get_absolute_url }}">{{ object.category.get_name }}</a><br>
-                {% endif %}
-                {% if object.brand %}
-                    <strong>{% trans "Brand" %}:</strong> <a href="{{ object.brand.get_absolute_url }}">{{ object.brand.get_name }}</a><br>
-                {% endif %}
-                {% if object.manufacturer %}
-                    <strong>{% trans "Manufacturer" %}:</strong> <a href="{{ object.manufacturer.get_absolute_url }}">{{ object.manufacturer.get_name }}</a><br>
-                {% endif %}
-            </p>
+            {% with object.get_categorization as categorization %}
+                <p>
+                    {% if categorization.category %}
+                        <strong>{% trans "Category" %}:</strong> <a href="{{ categorization.category.url }}">{{ categorization.category.name }}</a><br>
+                    {% endif %}
+                    {% if categorization.brand %}
+                        <strong>{% trans "Brand" %}:</strong> <a href="{{ categorization.brand.url }}">{{ categorization.brand.name }}</a><br>
+                    {% endif %}
+                    {% if categorization.manufacturer %}
+                        <strong>{% trans "Manufacturer" %}:</strong> <a href="{{ categorization.manufacturer.url }}">{{ categorization.manufacturer.name }}</a><br>
+                    {% endif %}
+                </p>
+            {% endwith %}
 
             <p>
                 <strong>{% trans "Url" %}:</strong> <a class="model-url model_href-url" href="{{ object.get_absolute_url }}">{{ object.get_absolute_url }}</a>
             </p>
 
+            {# Body placeholder. #}
             <div class="product-body">
                 <div id="placeholder-body-{{ object.pk }}" class="placeholder-body">
                     {% render_placeholder object.body %}

@@ -5,7 +5,7 @@
 {% block breadcrumbs %}
     {{ block.super }}
     <li><a href="{% url 'product_list' %}">{% trans "Products" %}</a></li>
-    <li class="active model-name">{{ object.get_name }}</li>
+    <li class="active">{{ object.get_name }}</li>
 {% endblock %}
 
 {% block page_title %}<h1>{{ object.get_name }} <small>{% trans "Product" %} </small></h1>{% endblock %}
@@ -111,7 +111,7 @@
             </p>
 
             <p>
-                <strong>{% trans "Url" %}:</strong> <a class="model-url model-href-url" href="{{ object.get_absolute_url }}">{{ object.get_absolute_url }}</a>
+                <strong>{% trans "Url" %}:</strong> <a class="model-url model_href-url" href="{{ object.get_absolute_url }}">{{ object.get_absolute_url }}</a>
             </p>
 
             <div class="product-body">
@@ -131,14 +131,14 @@
             {# Add to cart form. #}
             <br>
             <form method="post" action="{% url 'cart' %}">{% csrf_token %}
-                <input type="hidden" name="add_item_id" class="model-value-pk" value="{{ object.pk }}">
+                <input type="hidden" name="add_item_id" class="model_value-pk" value="{{ object.pk }}">
                 <input type="hidden" name="add_item_quantity" value="1">
                 {% if object.can_be_added_to_cart %}
-                    <input class="btn btn-primary btn-sm model-true-can_be_added_to_cart" type="submit" value="{% trans "Add to cart" %}">
-                    <input class="btn btn-danger btn-sm model-false-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+                    <input class="btn btn-primary btn-sm model_true-can_be_added_to_cart" type="submit" value="{% trans "Add to cart" %}">
+                    <input class="btn btn-danger btn-sm model_false-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
                 {% else %}
-                    <input class="btn btn-primary btn-sm model-true-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Add to cart" %}">
-                    <input class="btn btn-danger btn-sm model-false-can_be_added_to_cart" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+                    <input class="btn btn-primary btn-sm model_true-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Add to cart" %}">
+                    <input class="btn btn-danger btn-sm model_false-can_be_added_to_cart" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
                 {% endif %}
             </form>
         </div>
@@ -154,11 +154,11 @@
                 // Takes in boolean and enables or disables add to cart button.
                 var setCanBeAddedToCart = function (canBeAddedToCart) {
                     if (canBeAddedToCart) {
-                        $('.model-true-can_be_added_to_cart').show();
-                        $('.model-false-can_be_added_to_cart').hide();
+                        $('.model_true-can_be_added_to_cart').show();
+                        $('.model_false-can_be_added_to_cart').hide();
                     } else {
-                        $('.model-true-can_be_added_to_cart').hide();
-                        $('.model-false-can_be_added_to_cart').show();
+                        $('.model_true-can_be_added_to_cart').hide();
+                        $('.model_false-can_be_added_to_cart').show();
                     }
                 };
 
@@ -178,8 +178,8 @@
                         for (var key in data) {
                             var val = data[key];
                             $('.model-' + key).html(val);
-                            $('.model-value-' + key).val(val);
-                            $('.model-href-' + key).attr('href', val);
+                            $('.model_value-' + key).val(val);
+                            $('.model_href-' + key).attr('href', val);
                         }
                     } else {
                         // Data is null.
@@ -212,7 +212,7 @@
 
                         // Base object data.
                         var baseData = {
-                            pk: $('.model-value-pk').val(),
+                            pk: $('.model_value-pk').val(),
                             parent: null,
                             name: $('.model-name').html(),
                             slug: $('.model-slug').html(),

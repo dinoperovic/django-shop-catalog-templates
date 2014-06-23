@@ -19,9 +19,10 @@
                 {% render_placeholder object.media %}
             </div>
 
+            {# Render all media placeholders and hide them initialy #}
             {% if object.is_group %}
                 {% for variant in object.variants.all %}
-                    <div id="placeholder-media-{{ variant.pk }}" class="placeholder-media">
+                    <div id="placeholder-media-{{ variant.pk }}" class="placeholder-media" style="display: none;">
                         {% render_placeholder variant.media %}
                     </div>
                 {% endfor %}
@@ -122,9 +123,10 @@
                     {% render_placeholder object.body %}
                 </div>
 
+                {# Render all body placeholders and hide them initialy #}
                 {% if object.is_group %}
                     {% for variant in object.variants.all %}
-                        <div id="placeholder-body-{{ variant.pk }}" class="placeholder-body">
+                        <div id="placeholder-body-{{ variant.pk }}" class="placeholder-body" style="display: none;">
                             {% render_placeholder variant.body %}
                         </div>
                     {% endfor %}

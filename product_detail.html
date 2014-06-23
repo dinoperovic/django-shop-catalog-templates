@@ -22,9 +22,11 @@
             {# Render all media placeholders and hide them initialy #}
             {% if object.is_group %}
                 {% for variant in object.variants.all %}
-                    <div id="placeholder-media-{{ variant.pk }}" class="placeholder-media" style="display: none;">
-                        {% render_placeholder variant.media %}
-                    </div>
+                    {% if not variant.is_media_inherited %}
+                        <div id="placeholder-media-{{ variant.pk }}" class="placeholder-media" style="display: none;">
+                            {% render_placeholder variant.media %}
+                        </div>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
         </div>
@@ -126,9 +128,11 @@
                 {# Render all body placeholders and hide them initialy #}
                 {% if object.is_group %}
                     {% for variant in object.variants.all %}
-                        <div id="placeholder-body-{{ variant.pk }}" class="placeholder-body" style="display: none;">
-                            {% render_placeholder variant.body %}
-                        </div>
+                        {% if not variant.is_body_inherited %}
+                            <div id="placeholder-body-{{ variant.pk }}" class="placeholder-body" style="display: none;">
+                                {% render_placeholder variant.body %}
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
             </div>
@@ -168,16 +172,20 @@
                 };
 
                 // Toggle correct placeholders.
-                var setPlaceholders = function (pk) {
+                var setPlaceholders = function (data) {
+                    var objectId = '{{ object.pk }}';
+                    var mediaId = data.is_media_inherited ? objectId : data.pk;
+                    var bodyId = data.is_body_inherited ? objectId : data.pk;
+
                     $('.placeholder-media, .placeholder-body').hide();
-                    $('#placeholder-media-' + pk + ', #placeholder-body-' + pk).show();
+                    $('#placeholder-media-' + mediaId + ', #placeholder-body-' + bodyId).show();
                 };
 
                 // Takes in a JSON object and updates attributes.
                 var setVariant = function (data) {
                     if (data) {
                         setCanBeAddedToCart(data.can_be_added_to_cart);
-                        setPlaceholders(data.pk);
+                        setPlaceholders(data);
 
                         // Loop through data and map new values to models.
                         for (var key in data) {

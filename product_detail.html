@@ -157,6 +157,7 @@
     {% addtoblock "js" %}
         <script>
             var jQuery = window.jQuery || django.jQuery;
+            var productId = '{{ object.pk }}';
 
             (function ($) {
 
@@ -173,9 +174,8 @@
 
                 // Toggle correct placeholders.
                 var setPlaceholders = function (data) {
-                    var objectId = '{{ object.pk }}';
-                    var mediaId = data.is_media_inherited ? objectId : data.pk;
-                    var bodyId = data.is_body_inherited ? objectId : data.pk;
+                    var mediaId = data.is_media_inherited ? productId : data.pk;
+                    var bodyId = data.is_body_inherited ? productId : data.pk;
 
                     $('.placeholder-media, .placeholder-body').hide();
                     $('#placeholder-media-' + mediaId + ', #placeholder-body-' + bodyId).show();

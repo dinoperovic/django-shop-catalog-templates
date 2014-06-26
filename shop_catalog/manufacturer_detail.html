@@ -1,9 +1,10 @@
 {% extends "shop_catalog/base.html" %}
 {% load shop_tags i18n %}
+{% load url from future %}
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li><a href="{% url 'manufacturer_list' %}">{% trans "Manufacturers" %}</a></li>
+    <li><a href="{% url 'catalog_manufacturer_list' %}">{% trans "Manufacturers" %}</a></li>
     {% for bread in object.get_ancestors %}
         <li><a href="{{ bread.get_absolute_url }}">{{ bread.get_name }}</a></li>
     {% endfor %}

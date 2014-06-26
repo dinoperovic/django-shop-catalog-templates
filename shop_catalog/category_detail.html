@@ -4,7 +4,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li><a href="{% url 'category_list' %}">{% trans "Categories" %}</a></li>
+    <li><a href="{% url 'catalog_category_list' %}">{% trans "Categories" %}</a></li>
     {% for bread in object.get_ancestors %}
         <li><a href="{{ bread.get_absolute_url }}">{{ bread.get_name }}</a></li>
     {% endfor %}

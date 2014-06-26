@@ -4,7 +4,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li><a href="{% url 'product_list' %}">{% trans "Products" %}</a></li>
+    <li><a href="{% url 'catalog_product_list' %}">{% trans "Products" %}</a></li>
     <li class="active">{{ object.get_name }}</li>
 {% endblock %}
 
@@ -43,7 +43,7 @@
             {# Display product attributes if product has variants. #}
             {% if object.is_group %}
                 <div class="row">
-                    <form action="{% url 'product_variants' object.get_slug %}" method="GET" class="col-sm-6 attrs-form">
+                    <form action="{% url 'catalog_product_variants' object.get_slug %}" method="GET" class="col-sm-6 attrs-form">
                         {% for attr in object.get_variations %}
                             <div id="attr-{{ attr.code }}" class="form-group">
 

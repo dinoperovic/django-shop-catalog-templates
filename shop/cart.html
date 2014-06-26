@@ -74,13 +74,13 @@
             <p><input class="btn btn-default btn-sm" type="submit" value="{% trans "Empty Shopping Cart" %}"/></p>
         </form>
 
-        <p class="right"><a class="btn btn-primary" href="{% url 'product_list' %}">{% trans "Continue shopping" %}</a></p>
+        <p class="right"><a class="btn btn-primary" href="{% url 'catalog_product_list' %}">{% trans "Continue shopping" %}</a></p>
         <div class="clearfix"></div>
         <p class="right"><a class="btn btn-success" href="{% url 'checkout_selection' %}">{% trans "Proceed to checkout" %}</a></p>
 
     {% else %}
         <p>{% trans "Shopping cart is empty." %}</p>
         <br>
-        <p><a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">{% trans "Go to products" %}</a></p>
+        <p><a href="{% url 'catalog_product_list' %}" class="btn btn-primary btn-lg">{% trans "Go to products" %}</a></p>
     {% endif %}
 {% endblock %}

@@ -1,17 +1,16 @@
-{% extends "shop/base.html" %}
+{% extends "shop_catalog/base.html" %}
 {% load shop_tags i18n %}
-{% load url from future %}
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li><a href="{% url 'category_list' %}">{% trans "Categories" %}</a></li>
+    <li><a href="{% url 'manufacturer_list' %}">{% trans "Manufacturers" %}</a></li>
     {% for bread in object.get_ancestors %}
         <li><a href="{{ bread.get_absolute_url }}">{{ bread.get_name }}</a></li>
     {% endfor %}
     <li class="active">{{ object.get_name }}</li>
 {% endblock %}
 
-{% block page_title %}<h1>{{ object.get_name }} <small>{% trans "Category" %} </small></h1>{% endblock %}
+{% block page_title %}<h1>{{ object.get_name }} <small>{% trans "Manufacturer" %} </small></h1>{% endblock %}
 
 {% block body %}
     {% products object_list %}

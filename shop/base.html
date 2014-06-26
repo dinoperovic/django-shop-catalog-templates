@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load i18n shop_tags %}
+{% load url from future %}
+
+{% block base_header %}
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#shop-navbar-collapse">
+                    <span class="sr-only">{% trans "Toggle navigation" %}</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'shop_welcome' %}">{% trans "django SHOP" %} <span class="glyphicon glyphicon-globe"></span></a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="shop-navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="{% url 'product_list' %}">{% trans "Products" %}</a></li>
+                    <li><a href="{% url 'category_list' %}">{% trans "Categories" %}</a></li>
+                    <li><a href="{% url 'brand_list' %}">{% trans "Brands" %}</a></li>
+                    <li><a href="{% url 'manufacturer_list' %}">{% trans "Manufacturers" %}</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>{% cart %}</li>
+                    {% if user.is_authenticated %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="glyphicon glyphicon-user"></span> {{ user }} <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                {% if user.is_authenticated %}
+                                    <li><a href="{% url 'order_list' %}">{% trans "Orders" %}</a></li>
+                                {% endif %}
+                                <li class="divider"></li>
+                                <li><a href="{% url 'admin:logout' %}?next={% url 'shop_welcome' %}">{% trans "Logout" %}</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li><a href="?edit">{% trans "Login" %}</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block base_content %}
+    <div class="container">
+        {% block content %}
+            <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                    <li><a href="{% url 'shop_welcome' %}">{% trans "Home" %}</a></li>
+                {% endblock %}
+            </ol>
+            <div class="break50"></div>
+            <div class="page-header">
+                {% block page_title %}{% endblock %}
+            </div>
+            {% block body %}{% endblock %}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block base_footer %}
+    <div class="container">
+        <div class="break50"></div>
+        <div class="break50"></div>
+    </div>
+{% endblock %}
+

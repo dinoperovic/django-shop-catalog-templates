@@ -1,12 +1,12 @@
-{% extends "shop/base.html" %}
+{% extends "shop_catalog/base.html" %}
 {% load i18n mptt_tags %}
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <li class="active">{% trans "Categories" %}</li>
+    <li class="active">{% trans "Brands" %}</li>
 {% endblock %}
 
-{% block page_title %}<h1>{% trans "Categories" %}</h1>{% endblock %}
+{% block page_title %}<h1>{% trans "Brands" %}</h1>{% endblock %}
 
 {% block body %}
     {% if object_list %}
@@ -23,6 +23,6 @@
             {% endrecursetree %}
         </ul>
     {% else %}
-        <p>{% trans "No categories." %}</p>
+        <p>{% trans "No brands." %}</p>
     {% endif %}
 {% endblock %}

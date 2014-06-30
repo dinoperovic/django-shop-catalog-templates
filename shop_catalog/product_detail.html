@@ -33,7 +33,6 @@
 
         <div class="col-md-6">
             <h3><span class="model-name">{{ object.get_name }}</span> <br><small class="model-slug">{{ object.get_slug }}</small></h3>
-
             <p>
                 <strong>{% trans "Unit price" %}:</strong> <span class="model-unit_price">{{ object.get_unit_price }}</span><br>
                 <strong>{% trans "Discount percent" %}:</strong> <span class="model-discount_percent">{{ object.get_discount_percent }}</span>%<br>
@@ -115,6 +114,16 @@
                 </p>
             {% endwith %}
 
+            {# Measurements #}
+            <p>
+            {% for key, value in object.get_measurements.items %}
+                <strong>{% trans key|capfirst %}:</strong>
+                <span class="model-measurements-{{ key }}-original_value">{{ value.original_value }}</span>
+                <span class="model-measurements-{{ key }}-original_unit">{{ value.original_unit }}</span>
+                <br>
+            {% endfor %}
+            </p>
+
             <p>
                 <strong>{% trans "Url" %}:</strong> <a class="model-url model_href-url" href="{{ object.get_absolute_url }}">{{ object.get_absolute_url }}</a>
             </p>
@@ -190,6 +199,28 @@
                         // Loop through data and map new values to models.
                         for (var key in data) {
                             var val = data[key];
+
+                            // If object, loop through it's values and map them to models.
+                            if (typeof val === 'object') {
+                                for (var key2 in val) {
+                                    var val2 = val[key2];
+
+                                    // Check for 3rd level.
+                                    if (typeof val2 === 'object') {
+                                        for (var key3 in val2) {
+                                            var val3 = val2[key3];
+                                            $('.model-' + key + '-' + key2 + '-' + key3).html(val3);
+                                            $('.model_value-' + key + '-' + key2 + '-' + key3).val(val3);
+                                            $('.model_href-' + key + '-' + key2 + '-' + key3).attr('href', val3);
+                                        }
+                                        continue;
+                                    }
+                                    $('.model-' + key + '-' + key2).html(val2);
+                                    $('.model_value-' + key + '-' + key2).val(val2);
+                                    $('.model_href-' + key + '-' + key2).attr('href', val2);
+                                }
+                                continue;
+                            }
                             $('.model-' + key).html(val);
                             $('.model_value-' + key).val(val);
                             $('.model_href-' + key).attr('href', val);

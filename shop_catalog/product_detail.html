@@ -117,10 +117,12 @@
             {# Measurements #}
             <p>
             {% for key, value in object.get_measurements.items %}
-                <strong>{% trans key|capfirst %}:</strong>
-                <span class="model-measurements-{{ key }}-original_value">{{ value.original_value }}</span>
-                <span class="model-measurements-{{ key }}-original_unit">{{ value.original_unit }}</span>
-                <br>
+                {% if value %}
+                    <strong>{% trans key|capfirst %}:</strong>
+                    <span class="model-measurements-{{ key }}-original_value">{{ value.original_value }}</span>
+                    <span class="model-measurements-{{ key }}-original_unit">{{ value.original_unit }}</span>
+                    <br>
+                {% endif %}
             {% endfor %}
             </p>
 

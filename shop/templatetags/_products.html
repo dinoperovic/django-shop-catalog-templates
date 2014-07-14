@@ -8,9 +8,9 @@
 
                 <a href="{{ object.get_absolute_url }}" class="img">
                     {% if object.featured_image %}
-                        <img class="img-rounded img-responsive" src="{% thumbnail object.featured_image "800x400" crop upscale %}" alt="{{ object.get_name }}">
+                        <img class="img-thumbnail img-responsive" src="{% thumbnail object.featured_image "800x400" crop upscale %}" alt="{{ object.get_name }}">
                     {% else %}
-                        <img class="img-rounded img-responsive" src="http://placehold.it/800x400" alt="">
+                        <img class="img-thumbnail img-responsive" src="http://placehold.it/800x400" alt="">
                     {% endif %}
                 </a>
                 <div class="clearfix"></div>

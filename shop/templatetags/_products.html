@@ -17,15 +17,20 @@
                 <br>
 
                 <p><strong>{% trans "Price" %}:</strong> {{ object.get_price }}</p>
-                <form method="post" action="{% url 'cart' %}">{% csrf_token %}
-                    <input type="hidden" name="add_item_id" value="{{ object.pk }}">
-                    <input type="hidden" name="add_item_quantity" value="1">
-                    {% if object.can_be_added_to_cart %}
-                        <input class="btn btn-primary btn-sm" type="submit" value="{% trans "Add to cart" %}">
-                    {% else %}
-                        <input class="btn btn-danger btn-sm" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
-                    {% endif %}
-                </form>
+
+                {% if object.is_group %}
+                    <a class="btn btn-danger btn-sm" href="{{ object.get_absolute_url }}">{% trans "Choose a variation" %}</a>
+                {% else %}
+                    <form method="post" action="{% url 'cart' %}">{% csrf_token %}
+                        <input type="hidden" name="add_item_id" value="{{ object.pk }}">
+                        <input type="hidden" name="add_item_quantity" value="1">
+                        {% if object.can_be_added_to_cart %}
+                            <input class="btn btn-primary btn-sm" type="submit" value="{% trans "Add to cart" %}">
+                        {% else %}
+                            <input class="btn btn-danger btn-sm" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+                        {% endif %}
+                    </form>
+                {% endif %}
                 <hr class="visible-xs">
             </div>
             {% cycle '' '<div class="visible-sm"><div class="clearfix"></div><hr></div>' '<div class="visible-md visible-lg"><div class="clearfix"></div><hr></div>' %}

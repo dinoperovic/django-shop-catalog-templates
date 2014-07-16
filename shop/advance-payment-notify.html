@@ -1,5 +1,5 @@
 {% extends "shop/base.html" %}
-{% load shop_tags i18n %}
+{% load shop_tags i18n currency %}
 {% load url from future %}
 
 {% block breadcrumbs %}
@@ -12,6 +12,6 @@
 
 {% block body %}
     {% order order %}
-    <p>{% blocktrans %}Please pay {{ amount }} for your order to be completed.{% endblocktrans %}</p>
+    <p>{% blocktrans with amount=amount|currency:CURRENCY.code symbol=CURRENCY.symbol %}Please pay {{ amount }} {{ symbol }} for your order to be completed.{% endblocktrans %}</p>
     <a class="btn btn-success" href="{{ next_url }}">{% trans "Proceed" %}</a>
 {% endblock %}

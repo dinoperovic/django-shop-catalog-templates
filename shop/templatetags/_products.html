@@ -1,4 +1,4 @@
-{% load i18n thumbnail %}
+{% load i18n currency thumbnail %}
 
 <div class="row">
     {% if products %}
@@ -16,7 +16,7 @@
                 <div class="clearfix"></div>
                 <br>
 
-                <p><strong>{% trans "Price" %}:</strong> {{ object.get_price }}</p>
+                <p><strong>{% trans "Price" %}:</strong> {{ object.get_price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}</p>
 
                 {% if object.is_group %}
                     <a class="btn btn-danger btn-sm" href="{{ object.get_absolute_url }}">{% trans "Choose a variation" %}</a>

@@ -1,4 +1,4 @@
-{% load i18n catalog_tags %}
+{% load i18n catalog_tags currency %}
 
 <h3>{% trans "Order ID:" %} {{ order.pk }}</h3>
 <p>{% trans "Order Status" %}: {{ order.get_status_display }}</p>
@@ -25,12 +25,12 @@
             <th>{% trans "Price" %}</th>
         </tr>
     </thead>
-
     <tbody>
         {% for item in order.items.all %}
             <tr>
                 <td>{{ item.product_name }}</td>
-                <td>{{ item.unit_price|round_2 }}</td>
+                {# TODO: need to fix order templatetag to return context #}
+                <td>{{ item.unit_price }}</td>
                 <td>{{ item.quantity }}</td>
                 <td>{{ item.line_subtotal|round_2 }}</td>
             </tr>

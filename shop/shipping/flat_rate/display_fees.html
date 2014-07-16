@@ -1,5 +1,5 @@
 {% extends "shop/base.html" %}
-{% load i18n %}
+{% load i18n currency %}
 {% load url from future %}
 
 {% block breadcrumbs %}
@@ -11,7 +11,7 @@
 {% block page_title %}<h1>{% trans "Shipping fees" %}  <small>{% trans "Checkout" %}</small></h1>{% endblock %}
 
 {% block body %}
-    <p>{% blocktrans %}You will be charged {{ shipping_costs }} for shipping.{% endblocktrans %}</p>
+    <p>{% blocktrans with amount=shipping_costs|currency:CURRENCY.code symbol=CURRENCY.symbol %}You will be charged {{ amount }} {{ symbol }} for shipping.{% endblocktrans %}</p>
     <br>
     <a class="btn btn-success" href="{% url 'flat_process' %}">{% trans "Proceed" %}</a>
 {% endblock %}

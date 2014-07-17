@@ -40,6 +40,7 @@
                 <br>
 
                 <strong>{% trans "Discount percent" %}:</strong> <span class="model-discount_percent">{{ object.get_discount_percent }}</span>%<br>
+                <strong>{% trans "Tax percent" %}:</strong> <span class="model-tax_percent">{{ object.get_tax_percent }}</span>%<br>
 
                 <strong>{% trans "Price" %}:</strong>
                 <span class="model-currencies-{{ CURRENCY.code }}-price">{{ object.get_price|currency:CURRENCY.code }}</span>

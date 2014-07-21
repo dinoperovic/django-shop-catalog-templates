@@ -15,4 +15,4 @@ Installation
 - Install ``django-crispy-forms`` by running ``pip install django-crispy-forms``.
 - Add ``crispy_forms`` to your ``INSTALLED_APPS``.
 - Add ``CRISPY_TEMPLATE_PACK = 'bootstrap3'`` to your settings.
-- Clone this repo to your templates directory.
+- Clone this repo into your templates directory.

@@ -11,6 +11,8 @@ A collection of starting templates for `django-shop-catalog`_.
 Installation
 ------------
 
+- Install `django-shop-catalog`_.
 - Install ``django-crispy-forms`` by running ``pip install django-crispy-forms``.
+- Add ``crispy_forms`` to your ``INSTALLED_APPS``.
 - Add ``CRISPY_TEMPLATE_PACK = 'bootstrap3'`` to your settings.
-- Copy ``shop`` directory to your templates directory.
+- Clone this repo to your templates directory.

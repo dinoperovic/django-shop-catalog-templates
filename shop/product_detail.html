@@ -1,5 +1,5 @@
 {% extends "shop/base.html" %}
-{% load i18n cms_tags sekizai_tags currency thumbnail %}
+{% load i18n cms_tags sekizai_tags shop_tags currency thumbnail %}
 {% load url from future %}
 
 {% block breadcrumbs %}
@@ -35,7 +35,7 @@
             <h3><span class="model-name">{{ object.get_name }}</span> <br><small class="model-slug">{{ object.get_slug }}</small></h3>
             <p>
                 <strong>{% trans "Unit price" %}:</strong>
-                <span class="model-currencies-{{ CURRENCY.code }}-unit_price">{{ object.get_unit_price|currency:CURRENCY.code }}</span>
+                <span class="model-currencies-{{ CURRENCY.code }}-unit_price">{{ object.get_unit_price|currency:CURRENCY.code|priceformat }}</span>
                 <span class="model-currencies-{{ CURRENCY.code }}-symbol">{{ CURRENCY.symbol }}</span>
                 <br>
 
@@ -43,7 +43,7 @@
                 <strong>{% trans "Tax percent" %}:</strong> <span class="model-tax_percent">{{ object.get_tax_percent }}</span>%<br>
 
                 <strong>{% trans "Price" %}:</strong>
-                <span class="model-currencies-{{ CURRENCY.code }}-price">{{ object.get_price|currency:CURRENCY.code }}</span>
+                <span class="model-currencies-{{ CURRENCY.code }}-price">{{ object.get_price|currency:CURRENCY.code|priceformat }}</span>
                 <span class="model-currencies-{{ CURRENCY.code }}-symbol">{{ CURRENCY.symbol }}</span>
                 <br>
             </p>

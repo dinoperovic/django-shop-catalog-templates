@@ -1,4 +1,4 @@
-{% load i18n catalog_tags currency %}
+{% load i18n shop_tags currency %}
 
 <h3>{% trans "Order ID:" %} {{ order.pk }}</h3>
 <p>{% trans "Order Status" %}: {{ order.get_status_display }}</p>
@@ -30,33 +30,33 @@
             <tr>
                 <td>{{ item.product_name }}</td>
                 {# TODO: need to fix order templatetag to return context #}
-                <td>{{ item.unit_price }}</td>
+                <td>{{ item.unit_price|priceformat }}</td>
                 <td>{{ item.quantity }}</td>
-                <td>{{ item.line_subtotal|round_2 }}</td>
+                <td>{{ item.line_subtotal|priceformat }}</td>
             </tr>
             {% for item_extra in item.extraorderitempricefield_set.all %}
                 <tr>
                     <td colspan="2">&nbsp;</td>
                     <td>{{ item_extra.label }}</td>
-                    <td>{{ item_extra.value }}</td>
+                    <td>{{ item_extra.value|priceformat }}</td>
                 </tr>
                 {% if forloop.last %}
-                    <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{ item.line_total|round_2 }}</td></tr>
+                    <tr><td colspan="2">&nbsp;</td><td>{% trans "Line Total" %}:</td><td>{{ item.line_total|priceformat }}</td></tr>
                 {% endif %}
             {% endfor %}
         {% endfor %}
     </tbody>
 
     <tfoot>
-        <tr><td colspan="2">&nbsp;</td><td>{% trans "Order Subtotal" %}</td><td>{{ order.order_subtotal|round_2 }}</td></tr>
+        <tr><td colspan="2">&nbsp;</td><td>{% trans "Order Subtotal" %}</td><td>{{ order.order_subtotal|priceformat }}</td></tr>
         {% for extra_price_field in order.extraorderpricefield_set.all %}
             <tr>
                 <td colspan="2">&nbsp;</td>
                 <td>{{ extra_price_field.label }}</td>
-                <td>{{ extra_price_field.value|round_2 }}</td>
+                <td>{{ extra_price_field.value|priceformat }}</td>
             </tr>
         {% endfor %}
-        <tr><td colspan="2">&nbsp;</td><td><b>{% trans "Order Total" %}</b></td><td><b>{{ order.order_total|round_2 }}</b></td></tr>
+        <tr><td colspan="2">&nbsp;</td><td><b>{% trans "Order Total" %}</b></td><td><b>{{ order.order_total|priceformat }}</b></td></tr>
     </tfoot>
 </table>
 

@@ -3,37 +3,42 @@
 <div class="row">
     {% if products %}
         {% for object in products %}
-            <div class="col-md-4 col-sm-6">
-                <h3><a href="{{ object.get_absolute_url }}">{{ object.get_name }}</a></h3>
-
-                <a href="{{ object.get_absolute_url }}" class="img">
-                    {% if object.featured_image %}
-                        <img class="img-thumbnail img-responsive" src="{% thumbnail object.featured_image "800x600" crop upscale %}" alt="{{ object.get_name }}">
-                    {% else %}
-                        <img class="img-thumbnail img-responsive" src="http://placehold.it/800x600" alt="">
-                    {% endif %}
-                </a>
-                <div class="clearfix"></div>
-                <br>
-
-                <p><strong>{% trans "Price" %}:</strong> {{ object.get_price|currency:CURRENCY.code|priceformat }} {{ CURRENCY.symbol }}</p>
-
-                {% if object.is_group %}
-                    <a class="btn btn-danger btn-sm" href="{{ object.get_absolute_url }}">{% trans "Choose a variation" %}</a>
-                {% else %}
-                    <form method="post" action="{% url 'cart' %}">{% csrf_token %}
-                        <input type="hidden" name="add_item_id" value="{{ object.pk }}">
-                        <input type="hidden" name="add_item_quantity" value="1">
-                        {% if object.can_be_added_to_cart %}
-                            <input class="btn btn-primary btn-sm" type="submit" value="{% trans "Add to cart" %}">
+            <div class="col-sm-6 col-lg-4 col-md-4">
+                <div class="thumbnail">
+                    <a href="{{ object.get_absolute_url }}" class="img">
+                        {% if object.featured_image %}
+                            <img class="img-responsive" src="{% thumbnail object.featured_image "800x400" crop upscale %}" alt="{{ object.get_name }}">
                         {% else %}
-                            <input class="btn btn-danger btn-sm" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+                            <img class="img-responsive" src="http://placehold.it/800x400" alt="{{ object.get_name }}">
                         {% endif %}
-                    </form>
-                {% endif %}
-                <hr class="visible-xs">
+                    </a>
+                    <div class="caption">
+                        <h4 class="pull-right">{{ object.get_price|currency:CURRENCY.code|priceformat }} {{ CURRENCY.symbol }}</h4>
+                        <h4><a href="{{ object.get_absolute_url }}">{{ object.get_name }}</a></h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis, nihil, officiis.</p>
+                    </div>
+
+                    <div class="caption">
+                        <div class="pull-right">
+                            {% if object.is_group %}
+                                <a class="btn btn-danger btn-sm" href="{{ object.get_absolute_url }}">{% trans "Choose a variation" %}</a>
+                            {% else %}
+                                <form method="post" action="{% url 'cart' %}">{% csrf_token %}
+                                    <input type="hidden" name="add_item_id" value="{{ object.pk }}">
+                                    <input type="hidden" name="add_item_quantity" value="1">
+                                    {% if object.can_be_added_to_cart %}
+                                        <input class="btn btn-primary btn-sm" type="submit" value="{% trans "Add to cart" %}">
+                                    {% else %}
+                                        <input class="btn btn-danger btn-sm" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+                                    {% endif %}
+                                </form>
+                            {% endif %}
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
             </div>
-            {% cycle '' '<div class="visible-sm"><div class="clearfix"></div><hr></div>' '<div class="visible-md visible-lg"><div class="clearfix"></div><hr></div>' %}
         {% endfor %}
     {% else %}
         <div class="col-xs-12"><p>{% trans "No products." %}</p></div>

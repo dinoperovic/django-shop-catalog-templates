@@ -12,166 +12,166 @@
 
 {% block body %}
     <div class="row">
+        <div class="col-xs-12">
+            <div class="thumbnail">
 
-        {# Media placeholder. #}
-        <div class="product-media col-md-6">
-            <div id="placeholder-media-{{ object.pk }}" class="placeholder-media">
-                {% render_placeholder object.media %}
-            </div>
+                {# Media placeholder. #}
+                <div class="product-media">
+                    <div id="placeholder-media-{{ object.pk }}" class="placeholder-media">
+                        {% render_placeholder object.media %}
+                    </div>
 
-            {# Render all media placeholders and hide them initialy #}
-            {% if object.is_group %}
-                {% for variant in object.variants.all %}
-                    {% if not variant.is_media_inherited %}
-                        <div id="placeholder-media-{{ variant.pk }}" class="placeholder-media" style="display: none;">
-                            {% render_placeholder variant.media %}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        </div>
-
-        <div class="col-md-6">
-            <h3><span class="model-name">{{ object.get_name }}</span> <br><small class="model-slug">{{ object.get_slug }}</small></h3>
-            <p>
-                <strong>{% trans "Unit price" %}:</strong>
-                <span class="model-currencies-{{ CURRENCY.code }}-unit_price">{{ object.get_unit_price|currency:CURRENCY.code|priceformat }}</span>
-                <span class="model-currencies-{{ CURRENCY.code }}-symbol">{{ CURRENCY.symbol }}</span>
-                <br>
-
-                <strong>{% trans "Discount percent" %}:</strong> <span class="model-discount_percent">{{ object.get_discount_percent }}</span>%<br>
-                <strong>{% trans "Tax percent" %}:</strong> <span class="model-tax_percent">{{ object.get_tax_percent }}</span>%<br>
-
-                <strong>{% trans "Price" %}:</strong>
-                <span class="model-currencies-{{ CURRENCY.code }}-price">{{ object.get_price|currency:CURRENCY.code|priceformat }}</span>
-                <span class="model-currencies-{{ CURRENCY.code }}-symbol">{{ CURRENCY.symbol }}</span>
-                <br>
-            </p>
-
-            {# Display product attributes if product has variants. #}
-            {% if object.is_group %}
-                <div class="row">
-                    <form action="{% url 'catalog_product_variants' object.get_slug %}" method="GET" class="col-sm-6 attrs-form">
-                        {% for attr in object.get_variations %}
-                            <div id="attr-{{ attr.code }}" class="form-group">
-
-                                {# Radio atribute template. #}
-                                {% if attr.template == 'radio' %}
-                                    <p><strong>{{ attr.name }}:</strong></p>
-                                    {% if attr.is_nullable %}
-                                        <div class="radio">
-                                            <label>
-                                                <input name="{{ attr.code }}" class="attr" type="radio" value checked>
-                                                {% trans "None" %}
-                                            </label>
-                                        </div>
-                                    {% endif %}
-                                    {% for value in attr.values %}
-                                        <div class="radio">
-                                            <label for="id_attr-{{ attr.code }}-{{ forloop.counter }}">
-                                                <input id="id_attr-{{ attr.code }}-{{ forloop.counter }}" class="attr" name="{{ attr.code }}" type="radio" value="{{ value }}"
-                                                    {% if not attr.is_nullable and forloop.first %} checked{% endif %}>
-                                                {{ value }}
-                                            </label>
-                                        </div>
-                                    {% endfor %}
-
-                                {# Default attribute template. #}
-                                {% else %}
-                                    <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}:</label>
-                                    <select id="id_attr-{{ attr.code }}" name="{{ attr.code }}" class="attr form-control">
-                                        {% if attr.is_nullable %}
-                                            <option value>---------</option>
-                                        {% endif %}
-                                        {% for value in attr.values %}
-                                            <option value="{{ value }}">{{ value }}</option>
-                                        {% endfor %}
-                                    </select>
-                                {% endif %}
-                            </div>
+                    {# Render all media placeholders and hide them initialy #}
+                    {% if object.is_group %}
+                        {% for variant in object.variants.all %}
+                            {% if not variant.is_media_inherited %}
+                                <div id="placeholder-media-{{ variant.pk }}" class="placeholder-media" style="display: none;">
+                                    {% render_placeholder variant.media %}
+                                </div>
+                            {% endif %}
                         {% endfor %}
-                    </form>
+                    {% endif %}
                 </div>
 
-                {# Display all available combination of attributes. #}
-                <p>
-                    <strong>{% trans "Available combinations" %}:</strong>
-                    <ul>
-                    {% for item in object.variants.all %}
-                        <li>
-                            {% for attr in item.get_attrs %}
-                                <strong>{{ attr.name }}:</strong> {{ attr.value }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </p>
-            {% endif %}
-
-            {# Categorization. #}
-            {% with object.get_categorization as categorization %}
-                <p>
-                    {% if categorization.category %}
-                        <strong>{% trans "Category" %}:</strong> <a href="{{ categorization.category.url }}">{{ categorization.category.name }}</a><br>
-                    {% endif %}
-                    {% if categorization.brand %}
-                        <strong>{% trans "Brand" %}:</strong> <a href="{{ categorization.brand.url }}">{{ categorization.brand.name }}</a><br>
-                    {% endif %}
-                    {% if categorization.manufacturer %}
-                        <strong>{% trans "Manufacturer" %}:</strong> <a href="{{ categorization.manufacturer.url }}">{{ categorization.manufacturer.name }}</a><br>
-                    {% endif %}
-                </p>
-            {% endwith %}
-
-            {# Measurements #}
-            <p>
-            {% for key, value in object.get_measurements.items %}
-                {% if value %}
-                    <strong>{% trans key|capfirst %}:</strong>
-                    <span class="model-measurements-{{ key }}-original_value">{{ value.original_value }}</span>
-                    <span class="model-measurements-{{ key }}-original_unit">{{ value.original_unit }}</span>
-                    <br>
+                {# Featured image. #}
+                {% if object.featured_image %}
+                    <img class="img-responsive" src="{% thumbnail object.featured_image "1200x400" crop upscale %}" alt="{{ object.get_name }}">
+                {% else %}
+                    <img class="img-responsive" src="http://placehold.it/1200x400" alt="{{ object.get_name }}">
                 {% endif %}
-            {% endfor %}
-            </p>
 
-            <p>
-                <strong>{% trans "Url" %}:</strong> <a class="model-url model_href-url" href="{{ object.get_absolute_url }}">{{ object.get_absolute_url }}</a>
-            </p>
+                {# Info. #}
+                <div class="caption">
+                    <h3><span class="model-name">{{ object.get_name }}</span> <small class="model-slug">{{ object.get_slug }}</small></h3>
+                    <p>
+                        <strong>{% trans "Unit price" %}:</strong>
+                        <span class="model-currencies-{{ CURRENCY.code }}-unit_price">{{ object.get_unit_price|currency:CURRENCY.code|priceformat }}</span>
+                        <span class="model-currencies-{{ CURRENCY.code }}-symbol">{{ CURRENCY.symbol }}</span>
+                        <br>
+                        <strong>{% trans "Discount percent" %}:</strong> <span class="model-discount_percent">{{ object.get_discount_percent }}</span>%<br>
+                        <strong>{% trans "Tax percent" %}:</strong> <span class="model-tax_percent">{{ object.get_tax_percent }}</span>%<br>
+                    </p>
+                    <h4 class="text-danger">
+                        <span class="model-currencies-{{ CURRENCY.code }}-price">{{ object.get_price|currency:CURRENCY.code|priceformat }}</span>
+                        <span class="model-currencies-{{ CURRENCY.code }}-symbol">{{ CURRENCY.symbol }}</span>
+                        <br>
+                    </h4>
+                    <hr>
 
-            {# Body placeholder. #}
-            <div class="product-body">
-                <div id="placeholder-body-{{ object.pk }}" class="placeholder-body">
-                    {% render_placeholder object.body %}
-                </div>
+                    {# Display product attributes if product has variants. #}
+                    {% if object.is_group %}
+                        <div class="row">
+                            <form action="{% url 'catalog_product_variants' object.get_slug %}" method="GET" class="col-sm-6 col-md-4 col-lg-3 attrs-form">
+                                {% for attr in object.get_variations %}
+                                    <div id="attr-{{ attr.code }}" class="form-group">
 
-                {# Render all body placeholders and hide them initialy #}
-                {% if object.is_group %}
-                    {% for variant in object.variants.all %}
-                        {% if not variant.is_body_inherited %}
-                            <div id="placeholder-body-{{ variant.pk }}" class="placeholder-body" style="display: none;">
-                                {% render_placeholder variant.body %}
-                            </div>
+                                        {# Radio atribute template. #}
+                                        {% if attr.template == 'radio' %}
+                                            <p><strong>{{ attr.name }}:</strong></p>
+                                            {% if attr.is_nullable %}
+                                                <div class="radio">
+                                                    <label>
+                                                        <input name="{{ attr.code }}" class="attr" type="radio" value checked>
+                                                        {% trans "None" %}
+                                                    </label>
+                                                </div>
+                                            {% endif %}
+                                            {% for value in attr.values %}
+                                                <div class="radio">
+                                                    <label for="id_attr-{{ attr.code }}-{{ forloop.counter }}">
+                                                        <input id="id_attr-{{ attr.code }}-{{ forloop.counter }}" class="attr" name="{{ attr.code }}" type="radio" value="{{ value }}"
+                                                            {% if not attr.is_nullable and forloop.first %} checked{% endif %}>
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+
+                                        {# Default attribute template. #}
+                                        {% else %}
+                                            <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}:</label>
+                                            <select id="id_attr-{{ attr.code }}" name="{{ attr.code }}" class="attr form-control">
+                                                {% if attr.is_nullable %}
+                                                    <option value>---------</option>
+                                                {% endif %}
+                                                {% for value in attr.values %}
+                                                    <option value="{{ value }}">{{ value }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </form>
+                        </div>
+                        <hr>
+                    {% endif %}
+
+                    {# Categorization. #}
+                    {% with object.get_categorization as categorization %}
+                        <p>
+                            {% if categorization.category %}
+                                <strong>{% trans "Category" %}:</strong> <a href="{{ categorization.category.url }}">{{ categorization.category.name }}</a><br>
+                            {% endif %}
+                            {% if categorization.brand %}
+                                <strong>{% trans "Brand" %}:</strong> <a href="{{ categorization.brand.url }}">{{ categorization.brand.name }}</a><br>
+                            {% endif %}
+                            {% if categorization.manufacturer %}
+                                <strong>{% trans "Manufacturer" %}:</strong> <a href="{{ categorization.manufacturer.url }}">{{ categorization.manufacturer.name }}</a><br>
+                            {% endif %}
+                        </p>
+                    {% endwith %}
+
+                    {# Measurements #}
+                    <p>
+                    {% for key, value in object.get_measurements.items %}
+                        {% if value %}
+                            <strong>{% trans key|capfirst %}:</strong>
+                            <span class="model-measurements-{{ key }}-original_value">{{ value.original_value }}</span>
+                            <span class="model-measurements-{{ key }}-original_unit">{{ value.original_unit }}</span>
+                            <br>
                         {% endif %}
                     {% endfor %}
-                {% endif %}
+                    </p>
+
+                    <p><strong>{% trans "Url" %}:</strong> <a class="model-url model_href-url" href="{{ object.get_absolute_url }}">{{ object.get_absolute_url }}</a></p>
+                    <hr>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit eos corporis qui amet recusandae reiciendis, voluptatem voluptates consequatur eaque. Vitae nihil hic pariatur corrupti dignissimos impedit molestiae, doloribus repudiandae dolores.</p>
+                    <hr>
+
+                    {# Body placeholder. #}
+                    <div class="product-body">
+                        <div id="placeholder-body-{{ object.pk }}" class="placeholder-body">
+                            {% render_placeholder object.body %}
+                        </div>
+
+                        {# Render all body placeholders and hide them initialy #}
+                        {% if object.is_group %}
+                            {% for variant in object.variants.all %}
+                                {% if not variant.is_body_inherited %}
+                                    <div id="placeholder-body-{{ variant.pk }}" class="placeholder-body" style="display: none;">
+                                        {% render_placeholder variant.body %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+
+                    {# Add to cart form. #}
+                    <form method="post" action="{% url 'cart' %}">{% csrf_token %}
+                        <input type="hidden" name="add_item_id" class="model_value-pk" value="{{ object.pk }}">
+                        <input type="hidden" name="add_item_quantity" value="1">
+                        {% if object.can_be_added_to_cart %}
+                            <input class="btn btn-primary btn-sm model_true-can_be_added_to_cart" type="submit" value="{% trans "Add to cart" %}">
+                            <input class="btn btn-danger btn-sm model_false-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+                        {% else %}
+                            <input class="btn btn-primary btn-sm model_true-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Add to cart" %}">
+                            <input class="btn btn-danger btn-sm model_false-can_be_added_to_cart" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+                        {% endif %}
+                    </form>
+
+                </div>
             </div>
-
-            {# Add to cart form. #}
-            <br>
-            <form method="post" action="{% url 'cart' %}">{% csrf_token %}
-                <input type="hidden" name="add_item_id" class="model_value-pk" value="{{ object.pk }}">
-                <input type="hidden" name="add_item_quantity" value="1">
-                {% if object.can_be_added_to_cart %}
-                    <input class="btn btn-primary btn-sm model_true-can_be_added_to_cart" type="submit" value="{% trans "Add to cart" %}">
-                    <input class="btn btn-danger btn-sm model_false-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
-                {% else %}
-                    <input class="btn btn-primary btn-sm model_true-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Add to cart" %}">
-                    <input class="btn btn-danger btn-sm model_false-can_be_added_to_cart" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
-                {% endif %}
-            </form>
         </div>
-
     </div>
 
     {% addtoblock "js" %}

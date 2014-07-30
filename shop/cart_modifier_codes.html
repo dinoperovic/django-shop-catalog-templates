@@ -1,0 +1,22 @@
+{% extends "shop/base.html" %}
+{% load i18n crispy_forms_tags %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="active">{% trans "Promotional code" %}</li>
+{% endblock %}
+
+{% block page_title %}<h1>{% trans "Promotional code" %}</h1>{% endblock %}
+
+{% block body %}
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <h3>{% trans "Enter your code" %}</h3>
+                {{ form|crispy }}
+                <button class="btn btn-success" type="submit">{% trans "Apply" %}</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

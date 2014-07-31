@@ -82,9 +82,10 @@
             <p><input class="btn btn-default btn-sm" type="submit" value="{% trans "Empty Shopping Cart" %}"/></p>
         </form>
 
-        <p><a href="{% url 'catalog_cart_modifier_code_create' %}" class="btn btn-warning btn-sm">{% trans "Enter a promotional code" %}</a>
+        <p><a class="btn btn-primary btn-sm" href="{% url 'catalog_product_list' %}">{% trans "Continue shopping" %}</a></p>
 
-        <p class="right"><a class="btn btn-primary" href="{% url 'catalog_product_list' %}">{% trans "Continue shopping" %}</a></p>
+
+        <p class="right"><a href="{% url 'catalog_cart_modifier_code_create' %}" class="btn btn-warning">{% trans "Enter a promotional code" %}</a>
         <div class="clearfix"></div>
         <p class="right"><a class="btn btn-success" href="{% url 'checkout_selection' %}">{% trans "Proceed to checkout" %}</a></p>
 

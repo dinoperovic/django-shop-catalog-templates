@@ -17,17 +17,21 @@
                 <h3>{% trans "Enter your code" %}</h3>
                 {{ form|crispy }}
                 <button class="btn btn-success" type="submit">{% trans "Apply" %}</button>
+                <a href="{% url 'cart' %}" class="btn btn-default">{% trans "Back to cart" %}</a>
             </form>
         </div>
         <div class="col-md-6">
-            <h3>Applied codes</h3>
-            <ul>
-                {% for obj in object_list %}
-                    <li>{{ obj.code }}</li>
-                {% endfor %}
-            </ul>
-            <br>
-            <a href="{% url 'catalog_cart_modifier_code_delete' %}" class="btn btn-default">{% trans "Delete promotional codes" %}</a>
+            <h3>{% trans "Entered codes" %}</h3>
+            {% if object_list %}
+                <p>
+                    {% for obj in object_list %}
+                        <span class="label label-success">{{ obj.code }}</span>
+                    {% endfor %}
+                <p>
+                <a href="{% url 'catalog_cart_modifier_code_delete' %}" class="btn btn-default btn-sm">{% trans "Delete promotional codes" %}</a>
+            {% else %}
+                <p>{% trans "No promotional codes entered." %}</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

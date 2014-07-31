@@ -1,0 +1,33 @@
+{% extends "shop/base.html" %}
+{% load i18n crispy_forms_tags %}
+{% load url from future %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="active">{% trans "Promotional code" %}</li>
+{% endblock %}
+
+{% block page_title %}<h1>{% trans "Promotional code" %}</h1>{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-6">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <h3>{% trans "Enter your code" %}</h3>
+                {{ form|crispy }}
+                <button class="btn btn-success" type="submit">{% trans "Apply" %}</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <h3>Applied codes</h3>
+            <ul>
+                {% for obj in object_list %}
+                    <li>{{ obj.code }}</li>
+                {% endfor %}
+            </ul>
+            <br>
+            <a href="{% url 'catalog_cart_modifier_code_delete' %}" class="btn btn-default">{% trans "Delete promotional codes" %}</a>
+        </div>
+    </div>
+{% endblock %}

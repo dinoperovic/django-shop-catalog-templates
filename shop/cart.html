@@ -82,8 +82,7 @@
             <p><input class="btn btn-default btn-sm" type="submit" value="{% trans "Empty Shopping Cart" %}"/></p>
         </form>
 
-        <p><a href="{% url 'catalog_cart_modifier_codes' %}" class="btn btn-warning btn-sm">{% trans "Enter a promotional code" %}</a>
-        <p><a href="{% url 'catalog_cart_modifier_codes_delete' %}" class="btn btn-danger btn-sm">{% trans "Delete promotional codes" %}</a>
+        <p><a href="{% url 'catalog_cart_modifier_code_create' %}" class="btn btn-warning btn-sm">{% trans "Enter a promotional code" %}</a>
 
         <p class="right"><a class="btn btn-primary" href="{% url 'catalog_product_list' %}">{% trans "Continue shopping" %}</a></p>
         <div class="clearfix"></div>

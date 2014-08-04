@@ -1,4 +1,4 @@
-{% load i18n shop_tags catalog_tags currency thumbnail %}
+{% load i18n shop_tags catalog_tags catalog_utils_tags currency thumbnail %}
 
 <div class="row">
     <div class="col-sm-3">
@@ -8,7 +8,10 @@
             <h4>{{ f.name }}</h4>
             <ul class="list-unstyled">
                 {% for v in f.values %}
-                    <li><a href="?{% query_transform f.code v %}">{{ v }}</a></li>
+                    <li>
+                        <a class="label label-{% if request.GET|get:f.code|stringformat:'s' == v|stringformat:'s' %}success{% else %}default{% endif %}"
+                           href="?{% query_transform f.code v %}">{{ v }}</a>
+                    </li>
                 {% endfor %}
             </ul>
         {% endfor %}
@@ -18,11 +21,14 @@
         <ul class="list-unstyled">
             {% for price in price_steps %}
                 {% if not forloop.last %}
-                    <li>
-                        <a href="?{% query_transform 'price-from' price|currency:CURRENCY.code currency=CURRENCY.code %}">
-                            {{ price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}
-                        </a>
-                    </li>
+                    {% with price_from=request.GET|get:'price-from'|floatformat:2 price=price|currency:CURRENCY.code|priceformat %}
+                        <li>
+                            <a class="label label-{% if price_from == price %}success{% else %}default{% endif %}"
+                               href="?{% query_transform 'price-from' price currency=CURRENCY.code %}">
+                                {{ price }} {{ CURRENCY.symbol }}
+                            </a>
+                        </li>
+                    {% endwith %}
                 {% endif %}
             {% endfor %}
         </ul>
@@ -31,11 +37,14 @@
         <ul class="list-unstyled">
             {% for price in price_steps %}
                 {% if not forloop.first %}
-                <li>
-                    <a href="?{% query_transform 'price-to' price|currency:CURRENCY.code currency=CURRENCY.code %}">
-                        {{ price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}
-                    </a>
-                </li>
+                    {% with price_to=request.GET|get:'price-to'|floatformat:2 price=price|currency:CURRENCY.code|priceformat %}
+                        <li>
+                            <a class="label label-{% if price_to == price %}success{% else %}default{% endif %}"
+                               href="?{% query_transform 'price-to' price currency=CURRENCY.code %}">
+                                {{ price }} {{ CURRENCY.symbol }}
+                            </a>
+                        </li>
+                    {% endwith %}
                 {% endif %}
             {% endfor %}
         </ul>

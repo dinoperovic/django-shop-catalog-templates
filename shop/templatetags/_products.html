@@ -1,46 +1,93 @@
-{% load i18n shop_tags currency thumbnail %}
+{% load i18n shop_tags catalog_tags currency thumbnail %}
 
 <div class="row">
-    {% if products %}
-        {% for object in products %}
-            <div class="col-sm-6 col-lg-4 col-md-4">
-                <div class="thumbnail">
-                    <a href="{{ object.get_absolute_url }}" class="img">
-                        {% if object.featured_image %}
-                            <img class="img-responsive" src="{% thumbnail object.featured_image "800x400" crop upscale %}" alt="{{ object.get_name }}">
-                        {% else %}
-                            <img class="img-responsive" src="http://placehold.it/800x400" alt="{{ object.get_name }}">
-                        {% endif %}
-                    </a>
-                    <div class="caption">
-                        <h4 class="pull-right">{{ object.get_price|currency:CURRENCY.code|priceformat }} {{ CURRENCY.symbol }}</h4>
-                        <h4><a href="{{ object.get_absolute_url }}">{{ object.get_name }}</a></h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis, nihil, officiis.</p>
-                    </div>
+    <div class="col-sm-3">
 
-                    <div class="caption">
-                        <div class="pull-right">
-                            {% if object.is_group %}
-                                <a class="btn btn-danger btn-sm" href="{{ object.get_absolute_url }}">{% trans "Choose a variation" %}</a>
-                            {% else %}
-                                <form method="post" action="{% url 'cart' %}">{% csrf_token %}
-                                    <input type="hidden" name="add_item_id" value="{{ object.pk }}">
-                                    <input type="hidden" name="add_item_quantity" value="1">
-                                    {% if object.can_be_added_to_cart %}
-                                        <input class="btn btn-primary btn-sm" type="submit" value="{% trans "Add to cart" %}">
-                                    {% else %}
-                                        <input class="btn btn-danger btn-sm" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
-                                    {% endif %}
-                                </form>
-                            {% endif %}
-                        </div>
-
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-            </div>
+        {% get_attr_filters as attr_filters %}
+        {% for f in attr_filters.values %}
+            <h4>{{ f.name }}</h4>
+            <ul class="list-unstyled">
+                {% for v in f.values %}
+                    <li><a href="?{{ v.query_string }}">{{ v.value }}</a></li>
+                {% endfor %}
+            </ul>
         {% endfor %}
-    {% else %}
-        <div class="col-xs-12"><p>{% trans "No products." %}</p></div>
-    {% endif %}
+
+        {% get_price_steps as price_steps %}
+        <h4>{% trans "Price from" %}</h4>
+        <ul class="list-unstyled">
+            {% for price in price_steps %}
+                {% if not forloop.last %}
+                    <li>
+                        <a href="?{% query_transform 'price-from' price|currency:CURRENCY.code currency=CURRENCY.code %}">
+                            {{ price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <h4>{% trans "Price to" %}</h4>
+        <ul class="list-unstyled">
+            {% for price in price_steps %}
+                {% if not forloop.first %}
+                <li>
+                    <a href="?{% query_transform 'price-to' price|currency:CURRENCY.code currency=CURRENCY.code %}">
+                        {{ price|currency:CURRENCY.code }} {{ CURRENCY.symbol }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <hr>
+        <a href="{{ request.path }}">{% trans "Clear filters" %}</a>
+    </div>
+
+    <div class="col-sm-9">
+        <div class="row">
+            {% if products %}
+                {% for object in products %}
+                    <div class="col-sm-6 col-lg-4 col-md-4">
+                        <div class="thumbnail">
+                            <a href="{{ object.get_absolute_url }}" class="img">
+                                {% if object.featured_image %}
+                                    <img class="img-responsive" src="{% thumbnail object.featured_image "800x400" crop upscale %}" alt="{{ object.get_name }}">
+                                {% else %}
+                                    <img class="img-responsive" src="http://placehold.it/800x400" alt="{{ object.get_name }}">
+                                {% endif %}
+                            </a>
+                            <div class="caption">
+                                <h4 class="pull-right">{{ object.get_price|currency:CURRENCY.code|priceformat }} {{ CURRENCY.symbol }}</h4>
+                                <h4><a href="{{ object.get_absolute_url }}">{{ object.get_name }}</a></h4>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis, nihil, officiis.</p>
+                            </div>
+
+                            <div class="caption">
+                                <div class="pull-right">
+                                    {% if object.is_group %}
+                                        <a class="btn btn-danger btn-sm" href="{{ object.get_absolute_url }}">{% trans "Choose a variation" %}</a>
+                                    {% else %}
+                                        <form method="post" action="{% url 'cart' %}">{% csrf_token %}
+                                            <input type="hidden" name="add_item_id" value="{{ object.pk }}">
+                                            <input type="hidden" name="add_item_quantity" value="1">
+                                            {% if object.can_be_added_to_cart %}
+                                                <input class="btn btn-primary btn-sm" type="submit" value="{% trans "Add to cart" %}">
+                                            {% else %}
+                                                <input class="btn btn-danger btn-sm" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+                                            {% endif %}
+                                        </form>
+                                    {% endif %}
+                                </div>
+
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-xs-12"><p>{% trans "No products." %}</p></div>
+            {% endif %}
+        </div>
+    </div>
 </div>

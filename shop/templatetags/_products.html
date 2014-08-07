@@ -4,7 +4,7 @@
     <div class="col-sm-3">
 
         {# Search form. #}
-        <form action="?{% query_transform search='' %}" class="form-inline" method="GET">
+        <form class="form-inline" method="GET">
             <input class="form-control input-sm" id="catalog-search" name="search" type="text" value="{{ request.GET.search }}">
             {% for k, v in request.GET.items %}
                 {% if k != 'search' %}

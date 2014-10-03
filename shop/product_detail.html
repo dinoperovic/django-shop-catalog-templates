@@ -134,8 +134,22 @@
 
                     <p><strong>{% trans "Url" %}:</strong> <a class="model-url model_href-url" href="{{ object.get_absolute_url }}">{{ object.get_absolute_url }}</a></p>
                     <hr>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit eos corporis qui amet recusandae reiciendis, voluptatem voluptates consequatur eaque. Vitae nihil hic pariatur corrupti dignissimos impedit molestiae, doloribus repudiandae dolores.</p>
-                    <hr>
+
+                    {# Reviews #}
+                    {% url 'catalog_review_list' object.get_slug as review_list_url %}
+                    {% if review_list_url %}
+                        <p>
+                            <a href="{{ review_list_url }}">
+                                {{ object.reviews.count }} {% if object.reviews.count == 1 %}{% trans "Review" %}{% else %}{% trans "Reviews" %}{% endif %}
+                            </a>
+                        </p>
+                        <hr>
+                    {% endif %}
+
+                    {% if object.description %}
+                        <p class="model-description">{{ object.get_description }}</p>
+                        <hr>
+                    {% endif %}
 
                     {# Body placeholder. #}
                     <div class="product-body">

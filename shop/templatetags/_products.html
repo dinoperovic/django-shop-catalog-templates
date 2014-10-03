@@ -101,7 +101,7 @@
                             <div class="caption">
                                 <h4 class="pull-right">{{ object.get_price|currency:CURRENCY.code|priceformat }} {{ CURRENCY.symbol }}</h4>
                                 <h4><a href="{{ object.get_absolute_url }}">{{ object.get_name }}</a></h4>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis, nihil, officiis.</p>
+                                <p>{{ object.get_description|truncatewords:"3" }}&nbsp;</p>
                             </div>
 
                             <div class="caption">

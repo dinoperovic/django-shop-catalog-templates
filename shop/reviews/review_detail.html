@@ -1,0 +1,23 @@
+{% extends "shop/base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+
+{% block content %}
+    <div class="page-header">
+        <h1>
+            {{ product.get_name }}
+            <small>{% if object.user %}{{ object.user.get_full_name }}{% else %}{% trans "Review" %}{% endif %}</small>
+        </h1>
+    </div>
+    <p>{{ object.body }}</p>
+    <hr>
+
+    {% if request.user == object.user or request.session.session_key == object.session_key %}
+        <a class="btn btn-primary" href="{% url 'catalog_review_update' product.get_slug object.pk %}">{% trans "Update Review" %}</a>
+        <a class="btn btn-danger" href="{% url 'catalog_review_delete' product.get_slug object.pk %}">{% trans "Delete Review" %}</a>
+        <a class="btn btn-link" href="{% url 'catalog_review_list' product.get_slug %}">{% trans "Back to reviews" %}</a>
+    {% else %}
+        <a href="{% url 'catalog_review_list' product.get_slug %}">{% trans "Back to reviews" %}</a>
+    {% endif %}
+{% endblock %}

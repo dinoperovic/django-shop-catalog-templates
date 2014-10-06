@@ -2,14 +2,20 @@
 {% load i18n crispy_forms_tags %}
 {% load url from future %}
 
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li><a href="{% url 'catalog_product_list' %}">{% trans "Products" %}</a></li>
+    <li><a href="{% url 'catalog_product_detail' product.get_slug %}">{{ product.get_name }}</a></li>
+    <li><a href="{% url 'catalog_review_list' product.get_slug %}">{% trans "Reviews" %}</a></li>
+    <li><a href="{% url 'catalog_review_detail' product.get_slug object.pk %}">{% if object.user %}{{ object.user }}{% else %}{{ object.pk }}{% endif %}</a></li>
+    <li class="active">{% trans "Delete" %}</li>
+{% endblock %}
 
-{% block content %}
-    <div class="page-header">
-        <h1>
-            {{ product.get_name }}
-            <small>{% if object.user %}{{ object.user.get_full_name }}{% else %}{% trans "Review" %}{% endif %}</small>
-        </h1>
-    </div>
+{% block page_title %}
+    <h1>{{ product.get_name }} <small>{% if object.user %}{{ object.user }}{% else %}{{ object.pk }}{% endif %}</small></h1>
+{% endblock %}
+
+{% block body %}
     <form action="" method="POST">
         {% csrf_token %}
         {{ form|crispy }}

@@ -1,0 +1,54 @@
+{% load shop_tags i18n catalog_tags catalog_utils_tags currency %}
+
+{# Attribute filters. #}
+{% get_attr_filters as attr_filters %}
+{% for f in attr_filters.values %}
+    <h4>{{ f.name }}</h4>
+    <ul class="list-unstyled">
+        {% for v in f.values %}
+            <li>
+                <a class="label label-{% if request.GET|get:f.code|stringformat:'s' == v|stringformat:'s' %}success{% else %}default{% endif %}"
+                   href="?{% query_transform f.code v %}">{{ v }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+
+{# Price range filter. #}
+{% get_price_steps products=products as price_steps %}
+{% if price_steps %}
+    <h4>{% trans "Price from" %}</h4>
+    <ul class="list-unstyled">
+        {% for price in price_steps %}
+            {% if not forloop.last %}
+                {% with price_from=request.GET|get:'price-from'|floatformat:2 price=price|currency:CURRENCY.code|priceformat %}
+                    <li>
+                        <a class="label label-{% if price_from == price %}success{% else %}default{% endif %}"
+                           href="?{% query_transform 'price-from' price currency=CURRENCY.code %}">
+                            {{ price }} {{ CURRENCY.symbol }}
+                        </a>
+                    </li>
+                {% endwith %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <h4>{% trans "Price to" %}</h4>
+    <ul class="list-unstyled">
+        {% for price in price_steps %}
+            {% if not forloop.first %}
+                {% with price_to=request.GET|get:'price-to'|floatformat:2 price=price|currency:CURRENCY.code|priceformat %}
+                    <li>
+                        <a class="label label-{% if price_to == price %}success{% else %}default{% endif %}"
+                           href="?{% query_transform 'price-to' price currency=CURRENCY.code %}">
+                            {{ price }} {{ CURRENCY.symbol }}
+                        </a>
+                    </li>
+                {% endwith %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<hr>
+<a href="{{ request.path }}">{% trans "Clear filters" %}</a>

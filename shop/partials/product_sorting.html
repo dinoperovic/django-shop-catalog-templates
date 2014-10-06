@@ -1,0 +1,19 @@
+{% load i18n catalog_utils_tags %}
+
+<div class="row">
+    <div class="col-sm-6">
+        <p class="lead">{% if request.GET.search %}{% trans "Search" %}: "{{ request.GET.search }}"{% else %}&nbsp;{% endif %}</p>
+    </div>
+    <div class="col-sm-6">
+        <ul class="list-inline pull-right">
+            <li><a class="label label-{% if request.GET.sort == 'name' %}success{% else %}default{% endif %}"
+                   href="?{% query_transform sort='name' %}">{% trans "Name (A-Z)" %}</a></li>
+            <li><a class="label label-{% if request.GET.sort == '-name' %}success{% else %}default{% endif %}"
+                   href="?{% query_transform sort='-name' %}">{% trans "Name (Z-A)" %}</a></li>
+            <li><a class="label label-{% if request.GET.sort == 'unit_price' %}success{% else %}default{% endif %}"
+                   href="?{% query_transform sort='unit_price' %}">{% trans "Price (Low-High)" %}</a></li>
+            <li><a class="label label-{% if request.GET.sort == '-unit_price' %}success{% else %}default{% endif %}"
+                   href="?{% query_transform sort='-unit_price' %}">{% trans "Price (High-Low)" %}</a></li>
+        </ul>
+    </div>
+</div>

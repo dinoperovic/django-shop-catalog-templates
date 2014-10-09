@@ -62,7 +62,7 @@
                     {% if object.is_group %}
                         <div class="row">
                             <form action="{% url 'catalog_product_variants' object.get_slug %}" method="GET" class="col-sm-6 col-md-4 col-lg-3 attrs-form">
-                                {% for attr in object.get_variations %}
+                                {% for attr in object.get_variations.values %}
                                     <div id="attr-{{ attr.code }}" class="form-group">
 
                                         {# Radio atribute template. #}

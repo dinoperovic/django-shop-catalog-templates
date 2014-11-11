@@ -20,7 +20,7 @@
 {% endfor %}
 {% trans "Subtotal" %}: {{ order.currency_order_subtotal }} {{ order.currency_symbol }}
 {% for field in order.extra_price_fields %}{{ field.currency_value }} {{ order.currency_symbol }} ({{ field.label }})
-{% trans "Total" %}: {% endfor %}{{ order.currency_order_total }} {{ order.currency_symbol }}
+{% endfor %}{% trans "Total" %}: {{ order.currency_order_total }} {{ order.currency_symbol }}
 
 ===============================================================================
 {% trans "Shipping address" %}

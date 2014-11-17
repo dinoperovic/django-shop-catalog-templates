@@ -84,8 +84,11 @@
 
         <p><a class="btn btn-primary btn-sm" href="{% url 'catalog_product_list' %}">{% trans "Continue shopping" %}</a></p>
 
+        {% url 'catalog_cart_modifier_code_create' as cart_modifier_code_create_url %}
+        {% if cart_modifier_code_create_url %}
+            <p class="right"><a href="{{ cart_modifier_code_create_url }}" class="btn btn-warning">{% trans "Enter a promotional code" %}</a></p>
+        {% endif %}
 
-        <p class="right"><a href="{% url 'catalog_cart_modifier_code_create' %}" class="btn btn-warning">{% trans "Enter a promotional code" %}</a></p>
         <div class="clearfix"></div>
         <p class="right"><a class="btn btn-success" href="{% url 'checkout_selection' %}">{% trans "Proceed to checkout" %}</a></p>
 

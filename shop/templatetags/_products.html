@@ -2,65 +2,65 @@
 
 
 <div class="row">
-    {% if products %}
-        {% for object in products %}
-            <div class="col-sm-6 col-lg-4 col-md-4">
-                <div class="thumbnail">
-                    <a href="{{ object.get_absolute_url }}" class="img">
-                        {% if object.featured_image %}
-                            <img class="img-responsive" src="{% thumbnail object.featured_image "800x400" crop upscale %}" alt="{{ object.get_name }}">
-                        {% else %}
-                            <img class="img-responsive" src="http://placehold.it/800x400" alt="{{ object.get_name }}">
-                        {% endif %}
-                    </a>
-                    <div class="caption">
-                        <h4 class="pull-right">{{ object.get_price|currency:CURRENCY.code|priceformat }} {{ CURRENCY.symbol }}</h4>
-                        <h4><a href="{{ object.get_absolute_url }}">{{ object.get_name }}</a></h4>
-                        <p>{{ object.get_description|truncatewords:"3" }}&nbsp;</p>
-                    </div>
-
-                    <div class="caption">
-                        <div class="pull-right">
-                            {% if object.is_group %}
-                                <a class="btn btn-danger btn-sm" href="{{ object.get_absolute_url }}">{% trans "Choose a variation" %}</a>
-                            {% else %}
-                                <form method="post" action="{% url 'cart' %}">{% csrf_token %}
-                                    <input type="hidden" name="add_item_id" value="{{ object.pk }}">
-                                    <input type="hidden" name="add_item_quantity" value="1">
-                                    {% if object.can_be_added_to_cart %}
-                                        <input class="btn btn-primary btn-sm" type="submit" value="{% trans "Add to cart" %}">
-                                    {% else %}
-                                        <input class="btn btn-danger btn-sm" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
-                                    {% endif %}
-                                </form>
-                            {% endif %}
-                        </div>
-
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-            </div>
-            {% cycle '' '' '<div class="clearfix"></div>' %}
-        {% endfor %}
-
-        {# Pagination. #}
-        {% if is_paginated %}
-            <div class="col-xs-12">
-                <ul class="pagination pull-right">
-                    <li{% if not page_obj.has_previous %} class="disabled"{% endif %}>
-                        <a{% if page_obj.has_previous %} href="?{% query_transform page=page_obj.previous_page_number %}"{% endif %}>&laquo;</a>
-                    </li>
-                    {% for page_number in paginator.page_range %}
-                        <li{% if page_obj.number == page_number %} class="active"{% endif %}><a href="?{% query_transform page=page_number %}">{{ page_number }}</a></li>
-                    {% endfor %}
-                    <li{% if not page_obj.has_next %} class="disabled"{% endif %}>
-                        <a{% if page_obj.has_next %} href="?{% query_transform page=page_obj.next_page_number %}"{% endif %}>&raquo;</a>
-                    </li>
-                </ul>
-            </div>
+  {% if products %}
+  {% for object in products %}
+  <div class="col-sm-6 col-lg-4 col-md-4">
+    <div class="thumbnail">
+      <a href="{{ object.get_absolute_url }}" class="img">
+        {% if object.featured_image %}
+        <img class="img-responsive" src="{% thumbnail object.featured_image "800x400" crop upscale %}" alt="{{ object.get_name }}">
+        {% else %}
+        <img class="img-responsive" src="http://placehold.it/800x400" alt="{{ object.get_name }}">
         {% endif %}
+      </a>
+      <div class="caption">
+        <h4 class="pull-right">{{ object.get_price|currency:CURRENCY.code|priceformat }} {{ CURRENCY.symbol }}</h4>
+        <h4><a href="{{ object.get_absolute_url }}">{{ object.get_name }}</a></h4>
+        <p>{{ object.get_description|truncatewords:"3" }}&nbsp;</p>
+      </div>
 
-    {% else %}
-        <div class="col-xs-12"><p>{% trans "No products." %}</p></div>
-    {% endif %}
+      <div class="caption">
+        <div class="pull-right">
+          {% if object.is_group %}
+          <a class="btn btn-danger btn-sm" href="{{ object.get_absolute_url }}">{% trans "Choose a variation" %}</a>
+          {% else %}
+          <form method="post" action="{% url 'cart' %}">{% csrf_token %}
+            <input type="hidden" name="add_item_id" value="{{ object.pk }}">
+            <input type="hidden" name="add_item_quantity" value="1">
+            {% if object.can_be_added_to_cart %}
+            <input class="btn btn-primary btn-sm" type="submit" value="{% trans "Add to cart" %}">
+            {% else %}
+            <input class="btn btn-danger btn-sm" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+            {% endif %}
+          </form>
+          {% endif %}
+        </div>
+
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  {% cycle '' '' '<div class="clearfix"></div>' %}
+  {% endfor %}
+
+  {# Pagination. #}
+  {% if is_paginated %}
+  <div class="col-xs-12">
+    <ul class="pagination pull-right">
+      <li{% if not page_obj.has_previous %} class="disabled"{% endif %}>
+      <a{% if page_obj.has_previous %} href="?{% query_transform page=page_obj.previous_page_number %}"{% endif %}>&laquo;</a>
+    </li>
+    {% for page_number in paginator.page_range %}
+    <li{% if page_obj.number == page_number %} class="active"{% endif %}><a href="?{% query_transform page=page_number %}">{{ page_number }}</a></li>
+    {% endfor %}
+    <li{% if not page_obj.has_next %} class="disabled"{% endif %}>
+    <a{% if page_obj.has_next %} href="?{% query_transform page=page_obj.next_page_number %}"{% endif %}>&raquo;</a>
+  </li>
+</ul>
+</div>
+{% endif %}
+
+{% else %}
+<div class="col-xs-12"><p>{% trans "No products." %}</p></div>
+{% endif %}
 </div>

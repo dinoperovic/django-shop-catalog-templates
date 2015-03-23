@@ -3,66 +3,66 @@
 {% load url from future %}
 
 {% block base_header %}
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#shop-navbar-collapse">
-                    <span class="sr-only">{% trans "Toggle navigation" %}</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{% url 'shop_welcome' %}">{% trans "django SHOP" %} <span class="glyphicon glyphicon-globe"></span></a>
-            </div>
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#shop-navbar-collapse">
+        <span class="sr-only">{% trans "Toggle navigation" %}</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{% url 'shop_welcome' %}">{% trans "django SHOP" %} <span class="glyphicon glyphicon-globe"></span></a>
+    </div>
 
-            <div class="collapse navbar-collapse" id="shop-navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="{% url 'catalog_product_list' %}">{% trans "Products" %}</a></li>
-                    <li><a href="{% url 'catalog_category_list' %}">{% trans "Categories" %}</a></li>
-                    <li><a href="{% url 'catalog_brand_list' %}">{% trans "Brands" %}</a></li>
-                    <li><a href="{% url 'catalog_manufacturer_list' %}">{% trans "Manufacturers" %}</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li>{% cart %}</li>
-                    <li class="dropdown">
-                        <a{% if CURRENCIES|length != 1 %} href="#" class="dropdown-toggle" data-toggle="dropdown"{% else %} href="{% url 'currencies_set_currency' %}?currency={{ CURRENCY.code }}"{% endif %}>
-                            <span class="glyphicon glyphicon-euro"></span> {{ CURRENCY.name }} ({{ CURRENCY.code }})
-                            {% if CURRENCIES|length != 1 %}<b class="caret"></b>{% endif %}
-                        </a>
-                        {% if CURRENCIES|length != 1 %}
-                            <ul class="dropdown-menu">
-                                {% for currency in CURRENCIES %}
-                                    {% if currency.code != CURRENCY.code %}
-                                        <li><a href="{% url 'currencies_set_currency' %}?currency={{ currency.code }}">{{ currency.name }} ({{ currency.code }})</a></li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <div class="collapse navbar-collapse" id="shop-navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="{% url 'catalog_product_list' %}">{% trans "Products" %}</a></li>
+        <li><a href="{% url 'catalog_category_list' %}">{% trans "Categories" %}</a></li>
+        <li><a href="{% url 'catalog_brand_list' %}">{% trans "Brands" %}</a></li>
+        <li><a href="{% url 'catalog_manufacturer_list' %}">{% trans "Manufacturers" %}</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>{% cart %}</li>
+        <li class="dropdown">
+          <a{% if CURRENCIES|length != 1 %} href="#" class="dropdown-toggle" data-toggle="dropdown"{% else %} href="{% url 'currencies_set_currency' %}?currency={{ CURRENCY.code }}"{% endif %}>
+          <span class="glyphicon glyphicon-euro"></span> {{ CURRENCY.name }} ({{ CURRENCY.code }})
+          {% if CURRENCIES|length != 1 %}<b class="caret"></b>{% endif %}
+        </a>
+        {% if CURRENCIES|length != 1 %}
+        <ul class="dropdown-menu">
+          {% for currency in CURRENCIES %}
+          {% if currency.code != CURRENCY.code %}
+          <li><a href="{% url 'currencies_set_currency' %}?currency={{ currency.code }}">{{ currency.name }} ({{ currency.code }})</a></li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </li>
+    </ul>
+  </div>
+</div>
+</nav>
 {% endblock %}
 
 {% block base_content %}
-    <div class="container">
-        {% block content %}
-            <ol class="breadcrumb">
-                {% block breadcrumbs %}
-                    <li><a href="{% url 'shop_welcome' %}">{% trans "Home" %}</a></li>
-                {% endblock %}
-            </ol>
-            <div class="page-header">
-                {% block page_title %}{% endblock %}
-            </div>
-            {% block body %}{% endblock %}
-        {% endblock %}
-    </div>
+<div class="container">
+  {% block content %}
+  <ol class="breadcrumb">
+    {% block breadcrumbs %}
+    <li><a href="{% url 'shop_welcome' %}">{% trans "Home" %}</a></li>
+    {% endblock %}
+  </ol>
+  <div class="page-header">
+    {% block page_title %}{% endblock %}
+  </div>
+  {% block body %}{% endblock %}
+  {% endblock %}
+</div>
 {% endblock %}
 
 {% block base_footer %}
-    <div class="container">
-        <br><br><br><br><br>
-    </div>
+<div class="container">
+  <br><br><br><br><br>
+</div>
 {% endblock %}

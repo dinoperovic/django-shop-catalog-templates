@@ -3,25 +3,25 @@
 {% load url from future %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    <li><a href="{% url 'catalog_category_list' %}">{% trans "Categories" %}</a></li>
-    {% for bread in object.get_ancestors %}
-        <li><a href="{{ bread.get_absolute_url }}">{{ bread.get_name }}</a></li>
-    {% endfor %}
-    <li class="active">{{ object.get_name }}</li>
+{{ block.super }}
+<li><a href="{% url 'catalog_category_list' %}">{% trans "Categories" %}</a></li>
+{% for bread in object.get_ancestors %}
+<li><a href="{{ bread.get_absolute_url }}">{{ bread.get_name }}</a></li>
+{% endfor %}
+<li class="active">{{ object.get_name }}</li>
 {% endblock %}
 
 {% block page_title %}<h1>{{ object.get_name }} <small>{% trans "Category" %} </small></h1>{% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-sm-3">
-            {% include "shop/partials/search_form.html" %}
-            {% include "shop/partials/product_filters.html" with products=object_list %}
-        </div>
-        <div class="col-sm-9">
-            {% include "shop/partials/product_sorting.html" %}
-            {% products object_list %}
-        </div>
-    </div>
+<div class="row">
+  <div class="col-sm-3">
+    {% include "shop/partials/search_form.html" %}
+    {% include "shop/partials/product_filters.html" with products=object_list %}
+  </div>
+  <div class="col-sm-9">
+    {% include "shop/partials/product_sorting.html" %}
+    {% products object_list %}
+  </div>
+</div>
 {% endblock %}

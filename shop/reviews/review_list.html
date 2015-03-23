@@ -3,22 +3,22 @@
 {% load url from future %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    <li><a href="{% url 'catalog_product_list' %}">{% trans "Products" %}</a></li>
-    <li><a href="{% url 'catalog_product_detail' product.get_slug %}">{{ product.get_name }}</a></li>
-    <li class="active">{% trans "Reviews" %}</li>
+{{ block.super }}
+<li><a href="{% url 'catalog_product_list' %}">{% trans "Products" %}</a></li>
+<li><a href="{% url 'catalog_product_detail' product.get_slug %}">{{ product.get_name }}</a></li>
+<li class="active">{% trans "Reviews" %}</li>
 {% endblock %}
 
 {% block page_title %}<h1>{{ product.get_name }} <small>{% trans "Reviews" %} </small></h1>{% endblock %}
 
 {% block body %}
-    {% for object in object_list %}
-        <a href="{% url 'catalog_review_detail' product.get_slug object.pk %}">{{ object }}</a>
-        <p>{{ object.body }}</p>
-        <p class="text-muted">{% if object.user %}{{ object.user.get_full_name }}{% endif %}</p>
-        <hr>
-    {% endfor %}
+{% for object in object_list %}
+<a href="{% url 'catalog_review_detail' product.get_slug object.pk %}">{{ object }}</a>
+<p>{{ object.body }}</p>
+<p class="text-muted">{% if object.user %}{{ object.user.get_full_name }}{% endif %}</p>
+<hr>
+{% endfor %}
 
-    <a class="btn btn-primary" href="{% url 'catalog_review_create' product.get_slug %}">{% trans "Write a Review" %}</a>
-    <a class="btn btn-link" href="{% url 'catalog_product_detail' product.get_slug %}">{% trans "Back to Product" %}</a>
+<a class="btn btn-primary" href="{% url 'catalog_review_create' product.get_slug %}">{% trans "Write a Review" %}</a>
+<a class="btn btn-link" href="{% url 'catalog_product_detail' product.get_slug %}">{% trans "Back to Product" %}</a>
 {% endblock %}

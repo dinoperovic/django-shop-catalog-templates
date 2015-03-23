@@ -3,21 +3,21 @@
 {% load url from future %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    <li class="active">{% trans "Products" %}</li>
+{{ block.super }}
+<li class="active">{% trans "Products" %}</li>
 {% endblock %}
 
 {% block page_title %}<h1>{% trans "Products" %}</h1>{% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-sm-3">
-            {% include "shop/partials/search_form.html" %}
-            {% include "shop/partials/product_filters.html" with products=object_list %}
-        </div>
-        <div class="col-sm-9">
-            {% include "shop/partials/product_sorting.html" %}
-            {% products object_list %}
-        </div>
-    </div>
+<div class="row">
+  <div class="col-sm-3">
+    {% include "shop/partials/search_form.html" %}
+    {% include "shop/partials/product_filters.html" with products=object_list %}
+  </div>
+  <div class="col-sm-9">
+    {% include "shop/partials/product_sorting.html" %}
+    {% products object_list %}
+  </div>
+</div>
 {% endblock %}

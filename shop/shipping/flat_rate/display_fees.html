@@ -3,15 +3,15 @@
 {% load url from future %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    <li><a href="{% url 'checkout_selection' %}">{% trans "Checkout" %}</a></li>
-    <li class="active">{% trans "Shipping" %}</li>
+{{ block.super }}
+<li><a href="{% url 'checkout_selection' %}">{% trans "Checkout" %}</a></li>
+<li class="active">{% trans "Shipping" %}</li>
 {% endblock %}
 
 {% block page_title %}<h1>{% trans "Shipping fees" %}  <small>{% trans "Checkout" %}</small></h1>{% endblock %}
 
 {% block body %}
-    <p>{% blocktrans with amount=shipping_costs|currency:CURRENCY.code symbol=CURRENCY.symbol %}You will be charged {{ amount }} {{ symbol }} for shipping.{% endblocktrans %}</p>
-    <br>
-    <a class="btn btn-success" href="{% url 'flat_process' %}">{% trans "Proceed" %}</a>
+<p>{% blocktrans with amount=shipping_costs|currency:CURRENCY.code symbol=CURRENCY.symbol %}You will be charged {{ amount }} {{ symbol }} for shipping.{% endblocktrans %}</p>
+<br>
+<a class="btn btn-success" href="{% url 'flat_process' %}">{% trans "Proceed" %}</a>
 {% endblock %}

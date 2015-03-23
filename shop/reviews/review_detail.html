@@ -3,26 +3,26 @@
 {% load url from future %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    <li><a href="{% url 'catalog_product_list' %}">{% trans "Products" %}</a></li>
-    <li><a href="{% url 'catalog_product_detail' product.get_slug %}">{{ product.get_name }}</a></li>
-    <li><a href="{% url 'catalog_review_list' product.get_slug %}">{% trans "Reviews" %}</a></li>
-    <li class="active">{% if object.user %}{{ object.user }}{% else %}{{ object.pk }}{% endif %}</li>
+{{ block.super }}
+<li><a href="{% url 'catalog_product_list' %}">{% trans "Products" %}</a></li>
+<li><a href="{% url 'catalog_product_detail' product.get_slug %}">{{ product.get_name }}</a></li>
+<li><a href="{% url 'catalog_review_list' product.get_slug %}">{% trans "Reviews" %}</a></li>
+<li class="active">{% if object.user %}{{ object.user }}{% else %}{{ object.pk }}{% endif %}</li>
 {% endblock %}
 
 {% block page_title %}
-    <h1>{{ product.get_name }} <small>{% if object.user %}{{ object.user }}{% else %}{{ object.pk }}{% endif %}</small></h1>
+<h1>{{ product.get_name }} <small>{% if object.user %}{{ object.user }}{% else %}{{ object.pk }}{% endif %}</small></h1>
 {% endblock %}
 
 {% block body %}
-    <p>{{ object.body }}</p>
-    <hr>
+<p>{{ object.body }}</p>
+<hr>
 
-    {% if request.user == object.user or request.session.session_key == object.session_key %}
-        <a class="btn btn-primary" href="{% url 'catalog_review_update' product.get_slug object.pk %}">{% trans "Update Review" %}</a>
-        <a class="btn btn-danger" href="{% url 'catalog_review_delete' product.get_slug object.pk %}">{% trans "Delete Review" %}</a>
-        <a class="btn btn-link" href="{% url 'catalog_review_list' product.get_slug %}">{% trans "Back to reviews" %}</a>
-    {% else %}
-        <a href="{% url 'catalog_review_list' product.get_slug %}">{% trans "Back to reviews" %}</a>
-    {% endif %}
+{% if request.user == object.user or request.session.session_key == object.session_key %}
+<a class="btn btn-primary" href="{% url 'catalog_review_update' product.get_slug object.pk %}">{% trans "Update Review" %}</a>
+<a class="btn btn-danger" href="{% url 'catalog_review_delete' product.get_slug object.pk %}">{% trans "Delete Review" %}</a>
+<a class="btn btn-link" href="{% url 'catalog_review_list' product.get_slug %}">{% trans "Back to reviews" %}</a>
+{% else %}
+<a href="{% url 'catalog_review_list' product.get_slug %}">{% trans "Back to reviews" %}</a>
+{% endif %}
 {% endblock %}

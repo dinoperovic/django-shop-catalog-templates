@@ -3,304 +3,305 @@
 {% load url from future %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    <li><a href="{% url 'catalog_product_list' %}">{% trans "Products" %}</a></li>
-    <li class="active">{{ object.get_name }}</li>
+{{ block.super }}
+<li><a href="{% url 'catalog_product_list' %}">{% trans "Products" %}</a></li>
+<li class="active">{{ object.get_name }}</li>
 {% endblock %}
 
 {% block page_title %}<h1>{{ object.get_name }} <small>{% trans "Product" %} </small></h1>{% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="thumbnail">
+<div class="row">
+  <div class="col-xs-12">
+    <div class="thumbnail">
 
-                {# Media placeholder. #}
-                <div class="product-media">
-                    <div id="placeholder-media-{{ object.pk }}" class="placeholder-media">
-                        {% render_placeholder object.media %}
-                    </div>
-
-                    {# Render all media placeholders and hide them initialy #}
-                    {% if object.is_group %}
-                        {% for variant in object.variants.all %}
-                            {% if not variant.is_media_inherited %}
-                                <div id="placeholder-media-{{ variant.pk }}" class="placeholder-media" style="display: none;">
-                                    {% render_placeholder variant.media %}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                </div>
-
-                {# Featured image. #}
-                {% if object.featured_image %}
-                    <img class="img-responsive" src="{% thumbnail object.featured_image "1200x400" crop upscale %}" alt="{{ object.get_name }}">
-                {% else %}
-                    <img class="img-responsive" src="http://placehold.it/1200x400" alt="{{ object.get_name }}">
-                {% endif %}
-
-                {# Info. #}
-                <div class="caption">
-                    <h3><span class="model-name">{{ object.get_name }}</span> <small class="model-slug">{{ object.get_slug }}</small></h3>
-                    <p>
-                        <strong>{% trans "Unit price" %}:</strong>
-                        <span class="model-currencies-{{ CURRENCY.code }}-unit_price">{{ object.get_unit_price|currency:CURRENCY.code|priceformat }}</span>
-                        <span class="model-currencies-{{ CURRENCY.code }}-symbol">{{ CURRENCY.symbol }}</span>
-                        <br>
-                        <strong>{% trans "Discount percent" %}:</strong> <span class="model-discount_percent">{{ object.get_discount_percent }}</span>%<br>
-                        <strong>{% trans "Tax percent" %}:</strong> <span class="model-tax_percent">{{ object.get_tax_percent }}</span>%<br>
-                    </p>
-                    <h4 class="text-danger">
-                        <span class="model-currencies-{{ CURRENCY.code }}-price">{{ object.get_price|currency:CURRENCY.code|priceformat }}</span>
-                        <span class="model-currencies-{{ CURRENCY.code }}-symbol">{{ CURRENCY.symbol }}</span>
-                        <br>
-                    </h4>
-                    <hr>
-
-                    {# Display product attributes if product has variants. #}
-                    {% if object.is_group %}
-                        <div class="row">
-                            <form action="{% url 'catalog_product_variants' object.get_slug %}" method="GET" class="col-sm-6 col-md-4 col-lg-3 attrs-form">
-                                {% for attr in object.get_variations.values %}
-                                    <div id="attr-{{ attr.code }}" class="form-group">
-
-                                        {# Radio atribute template. #}
-                                        {% if attr.template == 'radio' %}
-                                            <p><strong>{{ attr.name }}:</strong></p>
-                                            {% if attr.is_nullable %}
-                                                <div class="radio">
-                                                    <label>
-                                                        <input name="{{ attr.code }}" class="attr" type="radio" value checked>
-                                                        {% trans "None" %}
-                                                    </label>
-                                                </div>
-                                            {% endif %}
-                                            {% for value in attr.values %}
-                                                <div class="radio">
-                                                    <label for="id_attr-{{ attr.code }}-{{ forloop.counter }}">
-                                                        <input id="id_attr-{{ attr.code }}-{{ forloop.counter }}" class="attr" name="{{ attr.code }}" type="radio" value="{{ value }}"
-                                                            {% if not attr.is_nullable and forloop.first %} checked{% endif %}>
-                                                        {{ value }}
-                                                    </label>
-                                                </div>
-                                            {% endfor %}
-
-                                        {# Default attribute template. #}
-                                        {% else %}
-                                            <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}:</label>
-                                            <select id="id_attr-{{ attr.code }}" name="{{ attr.code }}" class="attr form-control">
-                                                {% if attr.is_nullable %}
-                                                    <option value>---------</option>
-                                                {% endif %}
-                                                {% for value in attr.values %}
-                                                    <option value="{{ value }}">{{ value }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                            </form>
-                        </div>
-                        <hr>
-                    {% endif %}
-
-                    {# Categorization. #}
-                    {% with object.get_categorization as categorization %}
-                        <p>
-                            {% if categorization.category %}
-                                <strong>{% trans "Category" %}:</strong> <a href="{{ categorization.category.url }}">{{ categorization.category.name }}</a><br>
-                            {% endif %}
-                            {% if categorization.brand %}
-                                <strong>{% trans "Brand" %}:</strong> <a href="{{ categorization.brand.url }}">{{ categorization.brand.name }}</a><br>
-                            {% endif %}
-                            {% if categorization.manufacturer %}
-                                <strong>{% trans "Manufacturer" %}:</strong> <a href="{{ categorization.manufacturer.url }}">{{ categorization.manufacturer.name }}</a><br>
-                            {% endif %}
-                        </p>
-                    {% endwith %}
-
-                    {# Measurements #}
-                    <p>
-                    {% for key, value in object.get_measurements.items %}
-                        {% if value %}
-                            <strong>{% trans key|capfirst %}:</strong>
-                            <span class="model-measurements-{{ key }}-original_value">{{ value.original_value }}</span>
-                            <span class="model-measurements-{{ key }}-original_unit">{{ value.original_unit }}</span>
-                            <br>
-                        {% endif %}
-                    {% endfor %}
-                    </p>
-
-                    <p><strong>{% trans "Url" %}:</strong> <a class="model-url model_href-url" href="{{ object.get_absolute_url }}">{{ object.get_absolute_url }}</a></p>
-                    <hr>
-
-                    {# Reviews #}
-                    {% url 'catalog_review_list' object.get_slug as review_list_url %}
-                    {% if review_list_url %}
-                        <p>
-                            <a href="{{ review_list_url }}">
-                                {{ object.reviews.count }} {% if object.reviews.count == 1 %}{% trans "Review" %}{% else %}{% trans "Reviews" %}{% endif %}
-                            </a>
-                        </p>
-                        <hr>
-                    {% endif %}
-
-                    {% if object.description %}
-                        <p class="model-description">{{ object.get_description }}</p>
-                        <hr>
-                    {% endif %}
-
-                    {# Body placeholder. #}
-                    <div class="product-body">
-                        <div id="placeholder-body-{{ object.pk }}" class="placeholder-body">
-                            {% render_placeholder object.body %}
-                        </div>
-
-                        {# Render all body placeholders and hide them initialy #}
-                        {% if object.is_group %}
-                            {% for variant in object.variants.all %}
-                                {% if not variant.is_body_inherited %}
-                                    <div id="placeholder-body-{{ variant.pk }}" class="placeholder-body" style="display: none;">
-                                        {% render_placeholder variant.body %}
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-
-
-                    {# Add to cart form. #}
-                    <form method="post" action="{% url 'cart' %}">{% csrf_token %}
-                        <input type="hidden" name="add_item_id" class="model_value-pk" value="{{ object.pk }}">
-                        <input type="hidden" name="add_item_quantity" value="1">
-                        {% if object.can_be_added_to_cart %}
-                            <input class="btn btn-primary btn-sm model_true-can_be_added_to_cart" type="submit" value="{% trans "Add to cart" %}">
-                            <input class="btn btn-danger btn-sm model_false-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
-                        {% else %}
-                            <input class="btn btn-primary btn-sm model_true-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Add to cart" %}">
-                            <input class="btn btn-danger btn-sm model_false-can_be_added_to_cart" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
-                        {% endif %}
-                    </form>
-
-                </div>
-            </div>
+      {# Media placeholder. #}
+      <div class="product-media">
+        <div id="placeholder-media-{{ object.pk }}" class="placeholder-media">
+          {% render_placeholder object.media %}
         </div>
+
+        {# Render all media placeholders and hide them initialy #}
+        {% if object.is_group %}
+        {% for variant in object.variants.all %}
+        {% if not variant.is_media_inherited %}
+        <div id="placeholder-media-{{ variant.pk }}" class="placeholder-media" style="display: none;">
+          {% render_placeholder variant.media %}
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+      </div>
+
+      {# Featured image. #}
+      {% if object.featured_image %}
+      <img class="img-responsive" src="{% thumbnail object.featured_image "1200x400" crop upscale %}" alt="{{ object.get_name }}">
+      {% else %}
+      <img class="img-responsive" src="http://placehold.it/1200x400" alt="{{ object.get_name }}">
+      {% endif %}
+
+      {# Info. #}
+      <div class="caption">
+        <h3><span class="model-name">{{ object.get_name }}</span> <small class="model-slug">{{ object.get_slug }}</small></h3>
+        <p>
+          <strong>{% trans "Unit price" %}:</strong>
+          <span class="model-currencies-{{ CURRENCY.code }}-unit_price">{{ object.get_unit_price|currency:CURRENCY.code|priceformat }}</span>
+          <span class="model-currencies-{{ CURRENCY.code }}-symbol">{{ CURRENCY.symbol }}</span>
+          <br>
+          <strong>{% trans "Discount percent" %}:</strong> <span class="model-discount_percent">{{ object.get_discount_percent }}</span>%<br>
+          <strong>{% trans "Tax percent" %}:</strong> <span class="model-tax_percent">{{ object.get_tax_percent }}</span>%<br>
+        </p>
+        <h4 class="text-danger">
+          <span class="model-currencies-{{ CURRENCY.code }}-price">{{ object.get_price|currency:CURRENCY.code|priceformat }}</span>
+          <span class="model-currencies-{{ CURRENCY.code }}-symbol">{{ CURRENCY.symbol }}</span>
+          <br>
+        </h4>
+        <hr>
+
+        {# Display product attributes if product has variants. #}
+        {% if object.is_group %}
+        <div class="row">
+          <form action="{% url 'catalog_product_variants' object.get_slug %}" method="GET" class="col-sm-6 col-md-4 col-lg-3 attrs-form">
+            {% for attr in object.get_variations.values %}
+            <div id="attr-{{ attr.code }}" class="form-group">
+
+              {# Radio atribute template. #}
+              {% if attr.template == 'radio' %}
+              <p><strong>{{ attr.name }}:</strong></p>
+              {% if attr.is_nullable %}
+              <div class="radio">
+                <label>
+                  <input name="{{ attr.code }}" class="attr" type="radio" value checked>
+                  {% trans "None" %}
+                </label>
+              </div>
+              {% endif %}
+              {% for value in attr.values %}
+              <div class="radio">
+                <label for="id_attr-{{ attr.code }}-{{ forloop.counter }}">
+                  <input id="id_attr-{{ attr.code }}-{{ forloop.counter }}" class="attr" name="{{ attr.code }}" type="radio" value="{{ value }}"
+                  {% if not attr.is_nullable and forloop.first %} checked{% endif %}>
+                  {{ value }}
+                </label>
+              </div>
+              {% endfor %}
+
+              {# Default attribute template. #}
+              {% else %}
+              <label for="id_attr-{{ attr.code }}" class="control-label">{{ attr.name }}:</label>
+              <select id="id_attr-{{ attr.code }}" name="{{ attr.code }}" class="attr form-control">
+                {% if attr.is_nullable %}
+                <option value>---------</option>
+                {% endif %}
+                {% for value in attr.values %}
+                <option value="{{ value }}">{{ value }}</option>
+                {% endfor %}
+              </select>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </form>
+        </div>
+        <hr>
+        {% endif %}
+
+        {# Categorization. #}
+        {% with object.get_categorization as categorization %}
+        <p>
+          {% if categorization.category %}
+          <strong>{% trans "Category" %}:</strong> <a href="{{ categorization.category.url }}">{{ categorization.category.name }}</a><br>
+          {% endif %}
+          {% if categorization.brand %}
+          <strong>{% trans "Brand" %}:</strong> <a href="{{ categorization.brand.url }}">{{ categorization.brand.name }}</a><br>
+          {% endif %}
+          {% if categorization.manufacturer %}
+          <strong>{% trans "Manufacturer" %}:</strong> <a href="{{ categorization.manufacturer.url }}">{{ categorization.manufacturer.name }}</a><br>
+          {% endif %}
+        </p>
+        {% endwith %}
+
+        {# Measurements #}
+        <p>
+          {% for key, value in object.get_measurements.items %}
+          {% if value %}
+          <strong>{% trans key|capfirst %}:</strong>
+          <span class="model-measurements-{{ key }}-original_value">{{ value.original_value }}</span>
+          <span class="model-measurements-{{ key }}-original_unit">{{ value.original_unit }}</span>
+          <br>
+          {% endif %}
+          {% endfor %}
+        </p>
+
+        <p><strong>{% trans "Url" %}:</strong> <a class="model-url model_href-url" href="{{ object.get_absolute_url }}">{{ object.get_absolute_url }}</a></p>
+        <hr>
+
+        {# Reviews #}
+        {% url 'catalog_review_list' object.get_slug as review_list_url %}
+        {% if review_list_url %}
+        <p>
+          <a href="{{ review_list_url }}">
+            {{ object.reviews.count }} {% if object.reviews.count == 1 %}{% trans "Review" %}{% else %}{% trans "Reviews" %}{% endif %}
+          </a>
+        </p>
+        <hr>
+        {% endif %}
+
+        {% if object.description %}
+        <p class="model-description">{{ object.get_description }}</p>
+        <hr>
+        {% endif %}
+
+        {# Body placeholder. #}
+        <div class="product-body">
+          <div id="placeholder-body-{{ object.pk }}" class="placeholder-body">
+            {% render_placeholder object.body %}
+          </div>
+
+          {# Render all body placeholders and hide them initialy #}
+          {% if object.is_group %}
+          {% for variant in object.variants.all %}
+          {% if not variant.is_body_inherited %}
+          <div id="placeholder-body-{{ variant.pk }}" class="placeholder-body" style="display: none;">
+            {% render_placeholder variant.body %}
+          </div>
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+        </div>
+
+
+        {# Add to cart form. #}
+        <form method="post" action="{% url 'cart' %}">{% csrf_token %}
+          <input type="hidden" name="add_item_id" class="model_value-pk" value="{{ object.pk }}">
+          <input type="hidden" name="add_item_quantity" value="1">
+          {% if object.can_be_added_to_cart %}
+          <input class="btn btn-primary btn-sm model_true-can_be_added_to_cart" type="submit" value="{% trans "Add to cart" %}">
+          <input class="btn btn-danger btn-sm model_false-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+          {% else %}
+          <input class="btn btn-primary btn-sm model_true-can_be_added_to_cart" style="display: none;" type="submit" value="{% trans "Add to cart" %}">
+          <input class="btn btn-danger btn-sm model_false-can_be_added_to_cart" type="submit" value="{% trans "Cannot be added to cart" %}" disabled="disabled">
+          {% endif %}
+        </form>
+
+      </div>
     </div>
+  </div>
+</div>
 
-    {% addtoblock "js" %}
-        <script>
-            var jQuery = window.jQuery || django.jQuery;
-            var productId = '{{ object.pk }}';
+{% addtoblock "js" %}
+<script>
+  var jQuery = window.jQuery || django.jQuery;
+  var productId = '{{ object.pk }}';
 
-            (function ($) {
+  (function ($) {
 
-                // Takes in boolean and enables or disables add to cart button.
-                var setCanBeAddedToCart = function (canBeAddedToCart) {
-                    if (canBeAddedToCart) {
-                        $('.model_true-can_be_added_to_cart').show();
-                        $('.model_false-can_be_added_to_cart').hide();
-                    } else {
-                        $('.model_true-can_be_added_to_cart').hide();
-                        $('.model_false-can_be_added_to_cart').show();
-                    }
-                };
+    // Takes in boolean and enables or disables add to cart button.
+    var setCanBeAddedToCart = function (canBeAddedToCart) {
+      if (canBeAddedToCart) {
+        $('.model_true-can_be_added_to_cart').show();
+        $('.model_false-can_be_added_to_cart').hide();
+      } else {
+        $('.model_true-can_be_added_to_cart').hide();
+        $('.model_false-can_be_added_to_cart').show();
+      }
+    };
 
-                // Toggle correct placeholders.
-                var setPlaceholders = function (data) {
-                    var mediaId = data.is_media_inherited ? productId : data.pk;
-                    var bodyId = data.is_body_inherited ? productId : data.pk;
+    // Toggle correct placeholders.
+    var setPlaceholders = function (data) {
+      var mediaId = data.is_media_inherited ? productId : data.pk;
+      var bodyId = data.is_body_inherited ? productId : data.pk;
 
-                    $('.placeholder-media, .placeholder-body').hide();
-                    $('#placeholder-media-' + mediaId + ', #placeholder-body-' + bodyId).show();
-                };
+      $('.placeholder-media, .placeholder-body').hide();
+      $('#placeholder-media-' + mediaId + ', #placeholder-body-' + bodyId).show();
+    };
 
-                // Takes in a JSON object and updates attributes.
-                var setVariant = function (data) {
-                    if (data) {
-                        setCanBeAddedToCart(data.can_be_added_to_cart);
-                        setPlaceholders(data);
+    // Takes in a JSON object and updates attributes.
+    var setVariant = function (data) {
+      if (data) {
+        setCanBeAddedToCart(data.can_be_added_to_cart);
+        setPlaceholders(data);
 
-                        // Loop through data and map new values to models.
-                        for (var key in data) {
-                            var val = data[key];
+        // Loop through data and map new values to models.
+        for (var key in data) {
+          var val = data[key];
 
-                            // If object, loop through it's values and map them to models.
-                            if (typeof val === 'object') {
-                                for (var key2 in val) {
-                                    var val2 = val[key2];
+          // If object, loop through it's values and map them to models.
+          if (typeof val === 'object') {
+            for (var key2 in val) {
+              var val2 = val[key2];
 
-                                    // Check for 3rd level.
-                                    if (typeof val2 === 'object') {
-                                        for (var key3 in val2) {
-                                            var val3 = val2[key3];
-                                            $('.model-' + key + '-' + key2 + '-' + key3).html(val3);
-                                            $('.model_value-' + key + '-' + key2 + '-' + key3).val(val3);
-                                            $('.model_href-' + key + '-' + key2 + '-' + key3).attr('href', val3);
-                                        }
-                                        continue;
-                                    }
-                                    $('.model-' + key + '-' + key2).html(val2);
-                                    $('.model_value-' + key + '-' + key2).val(val2);
-                                    $('.model_href-' + key + '-' + key2).attr('href', val2);
-                                }
-                                continue;
-                            }
-                            $('.model-' + key).html(val);
-                            $('.model_value-' + key).val(val);
-                            $('.model_href-' + key).attr('href', val);
-                        }
-                    } else {
-                        // Data is null.
-                        setCanBeAddedToCart(false);
-                    }
-                };
+              // Check for 3rd level.
+              if (typeof val2 === 'object') {
+                for (var key3 in val2) {
+                  var val3 = val2[key3];
+                  $('.model-' + key + '-' + key2 + '-' + key3).html(val3);
+                  $('.model_value-' + key + '-' + key2 + '-' + key3).val(val3);
+                  $('.model_href-' + key + '-' + key2 + '-' + key3).attr('href', val3);
+                }
+                continue;
+              }
 
-                // Returns a variant with attributes passed in as data.
-                var getVariant = function (url, data) {
-                    var result = null;
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        data: data,
-                        dataType: 'json',
-                        async: false,
-                        success: function (data) {
-                            result = data;
-                        }
-                    });
-                    return result;
-                };
+              $('.model-' + key + '-' + key2).html(val2);
+              $('.model_value-' + key + '-' + key2).val(val2);
+              $('.model_href-' + key + '-' + key2).attr('href', val2);
+            }
+            continue;
+          }
 
-                $(document).ready(function () {
-                    var $attrsForm = $('.attrs-form');
+          $('.model-' + key).html(val);
+          $('.model_value-' + key).val(val);
+          $('.model_href-' + key).attr('href', val);
+        }
+      } else {
+        // Data is null.
+        setCanBeAddedToCart(false);
+      }
+    };
 
-                    // Init variants only if they exist.
-                    if ($attrsForm.length) {
-                        var $attrsFormAction = $attrsForm.attr('action');
-                        var baseData = $.parseJSON($('<div/>').html('{{ object.as_json }}').text());
+    // Returns a variant with attributes passed in as data.
+    var getVariant = function (url, data) {
+      var result = null;
+      $.ajax({
+        url: url,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+          result = data;
+        }
+      });
+      return result;
+    };
 
-                        // Set initial variant.
-                        var variant = getVariant($attrsFormAction, $attrsForm.serialize());
-                        if (variant) {
-                            setVariant(variant);
-                        }
+    $(document).ready(function () {
+      var $attrsForm = $('.attrs-form');
 
-                        // Add event listener when any attribute change.
-                        $attrsForm.find('.attr').on('change', function (event) {
-                            variant = getVariant($attrsFormAction, $attrsForm.serialize());
-                            if (variant) {
-                                setVariant(variant);
-                            } else {
-                                setVariant(baseData);
-                            }
-                        });
-                    }
-                });
+      // Init variants only if they exist.
+      if ($attrsForm.length) {
+        var $attrsFormAction = $attrsForm.attr('action');
+        var baseData = $.parseJSON($('<div/>').html('{{ object.as_json }}').text());
 
-            })(jQuery);
-        </script>
-    {% endaddtoblock %}
+        // Set initial variant.
+        var variant = getVariant($attrsFormAction, $attrsForm.serialize());
+        if (variant) {
+          setVariant(variant);
+        }
+
+        // Add event listener when any attribute change.
+        $attrsForm.find('.attr').on('change', function (event) {
+          variant = getVariant($attrsFormAction, $attrsForm.serialize());
+          if (variant) {
+            setVariant(variant);
+          } else {
+            setVariant(baseData);
+          }
+        });
+      }
+    });
+  })(jQuery);
+</script>
+{% endaddtoblock %}
 
 {% endblock %}
 
